@@ -1,15 +1,15 @@
 import React from "react";
 import {
   Box,
-  Button,
-  TextField,
+  // Button,
+  // TextField,
   Typography,
-  Avatar,
-  IconButton,
-  Tabs,
-  Tab,
+  // Avatar,
+  // IconButton,
+  // Tabs,
+  // Tab,
   Switch,
-  Grid,
+  // Grid,
 } from "@mui/material";
 
 const EnableThumbprint: React.FC = () => {

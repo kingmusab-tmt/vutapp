@@ -4,11 +4,11 @@ import {
   Button,
   TextField,
   Typography,
-  Avatar,
-  IconButton,
-  Tabs,
-  Tab,
-  Switch,
+  // Avatar,
+  // IconButton,
+  // Tabs,
+  // Tab,
+  // Switch,
   Grid,
 } from "@mui/material";
 
@@ -21,9 +21,12 @@ const StockVending: React.FC = () => {
   };
 
   const calculateProfit = () => {
+     setCompanyPrice(1000); // Mock value
     return sellingPrice > companyPrice
+   
       ? (sellingPrice - companyPrice) * 30 // Assume 30 items sold monthly
       : 0;
+    
   };
 
   return (

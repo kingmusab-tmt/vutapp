@@ -18,9 +18,9 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  Tooltip,
+  // Tooltip,
   useMediaQuery,
-  CssBaseline,
+  // CssBaseline,
 } from "@mui/material";
 import {
   Dashboard,
@@ -31,7 +31,7 @@ import {
   Logout,
   Menu as MenuIcon,
 } from "@mui/icons-material";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -57,9 +57,9 @@ const AdminDashboard: React.FC = () => {
   };
 
   const renderContent = () => {
-    if (loading) {
-      return <Typography variant="h6">Loading...</Typography>;
-    }
+    // if (loading) {
+    //   return <Typography variant="h6">Loading...</Typography>;
+    // }
 
     switch (selectedSection) {
       case "overview":
@@ -132,27 +132,27 @@ const AdminDashboard: React.FC = () => {
         }}
       >
         <List>
-          <ListItem button onClick={() => handleNavigation("overview")}>
+          <ListItem component="button" onClick={() => handleNavigation("overview")}>
             <ListItemIcon><Dashboard /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Overview" />}
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("leads")}>
+          <ListItem component="button" onClick={() => handleNavigation("leads")}>
             <ListItemIcon><Group /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Lead Management" />}
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("campaigns")}>
+          <ListItem component="button" onClick={() => handleNavigation("campaigns")}>
             <ListItemIcon><Campaign /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Campaign Management" />}
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("reports")}>
+          <ListItem component="button" onClick={() => handleNavigation("reports")}>
             <ListItemIcon><Insights /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Reports" />}
           </ListItem>
-          <ListItem button onClick={() => handleNavigation("settings")}>
+          <ListItem component="button" onClick={() => handleNavigation("settings")}>
             <ListItemIcon><Settings /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Settings" />}
           </ListItem>
-          <ListItem button>
+          <ListItem component="button">
             <ListItemIcon><Logout /></ListItemIcon>
             {drawerOpen && <ListItemText primary="Logout" />}
           </ListItem>
