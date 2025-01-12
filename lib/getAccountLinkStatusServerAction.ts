@@ -10,7 +10,10 @@ export const getAccountLinkStatus = async () => {
     throw new Error("Unauthorized");
   }
 
-  const uuid: string = session.user?.id;
+  const uuid: string = session.user?.id ?? "";
+  if (!uuid) {
+    throw new Error("User ID is null");
+  }
 
   // Sanitize input
   const uuidRegExp: RegExp =
