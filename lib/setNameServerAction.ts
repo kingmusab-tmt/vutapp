@@ -11,7 +11,10 @@ const session = await getServerSession(authOptions);
     throw new Error("Unauthorized");
   }
 
-  const userId: string = session.user?.id;
+  const userId: string | null = session.user?.id;
+  if (!userId) {
+    throw new Error("User ID is null");
+  }
 
   // Sanitize input
   const uuidRegExp: RegExp =
