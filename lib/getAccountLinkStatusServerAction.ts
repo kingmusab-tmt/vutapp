@@ -2,6 +2,8 @@
 
 import { getServerSession } from "next-auth";
 import client from "./db";
+import dbConnect from "./connectdb";
+import User from "@/models/user";
 
 export const getAccountLinkStatus = async () => {
   // Check if the user is authenticated
@@ -10,26 +12,26 @@ export const getAccountLinkStatus = async () => {
     throw new Error("Unauthorized");
   }
 
-  const uuid: string = session.user?.id ?? "";
-  if (!uuid) {
-    throw new Error("User ID is null");
+  const email: string = session.user?.email ?? "";
+  if (!email) {
+    throw new Error("email is null");
   }
 
   // Sanitize input
   const uuidRegExp: RegExp =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-  if (typeof uuid !== "string" || !uuidRegExp.test(uuid)) {
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (typeof email !== "string" || !uuidRegExp.test(email)) {
     throw new Error("Invalid UUID");
   }
 
   // Check if the user has a Google account linked in MongoDB
   try {
-    const db = client.db("yourDatabaseName");
-    const accountsCollection = db.collection("accounts");
+    await dbConnect();
+    
 
-    const accountExists = await accountsCollection.findOne({
-      provider: "google",
-      userId: uuid,
+    const accountExists = await User.findOne({
+      provider: "email",
+      email
     });
 
     // If no matching account is found, return false

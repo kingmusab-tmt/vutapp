@@ -1,8 +1,7 @@
-// import { DashboardPage } from "./dashboard";
+
 import { checkIsAuthenticated } from "@/lib/checkIsAuthenticated";
 import { redirect } from "next/navigation";
-// import AdminDashboard from "./admindashboard";
-import UserDashboard from "./userdashboard";
+import DashboardHome from "./userdashboard";
 
 const Dashboard: React.FC = async () => {
   const isAuthenticated = await checkIsAuthenticated();
@@ -10,7 +9,7 @@ const Dashboard: React.FC = async () => {
   if (!isAuthenticated) {
     redirect("/auth/sign-in");
   } else {
-    return <UserDashboard />;
+    return <DashboardHome />;
       //  return <AdminDashboard />;
   }
 };

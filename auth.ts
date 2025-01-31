@@ -1,18 +1,26 @@
-// import NextAuth from "next-auth";
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { verifyAuthenticationResponse } from '@simplewebauthn/server';
+import base64url from 'base64url';
 import Google from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import client from "./lib/db";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { setName } from "@/lib/setNameServerAction";
 import { clearStaleTokens } from "./lib/clearStaleTokensServerAction";
 import { NextAuthOptions} from "next-auth";
+import dbConnect from "./lib/connectdb";
+import User from "./models/user";
+import { createTransport } from "nodemailer";
+
+const domain = process.env.AUTH_URL!;
+const origin = process.env.AUTH_URL!;
 
 export const authOptions = {
   adapter: MongoDBAdapter(client),
-  secret: process.env.AUTH_SECRET as string, // Used to sign the session cookie so AuthJS can verify the session
+  secret: process.env.AUTH_SECRET as string,
+  
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds (this value is also the default)
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: "/auth/sign-in",
@@ -26,7 +34,7 @@ export const authOptions = {
       allowDangerousEmailAccountLinking: true, 
        authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account",
           access_type: "offline",
           response_type: "code",
         },
@@ -40,6 +48,9 @@ export const authOptions = {
           name: profile.name,
           image: profile.picture,
           role: profile.role ?? "user",
+          provider: profile.provider ?? "google",
+          lastLogin: null,
+          hasSeenModal: false,
         };
       },
       httpOptions: {
@@ -56,47 +67,113 @@ export const authOptions = {
         },
       },
       from: process.env.EMAIL_FROM as string,
+      sendVerificationRequest: async ({ identifier, url, provider }) => {
+    const { host } = new URL(url);
+    const transport = createTransport(provider.server);
+    await transport.sendMail({
+      to: identifier,
+      from: provider.from,
+      subject: `Sign in to ${host}`,
+      text: `Sign in by clicking on the link below:\n\n${url}\n\n`,
+      html: `<p>Sign in by clicking on the link below:</p><p><a href="${url}">Sign in</a></p>`,
+    });
+  },
     }),
+    CredentialsProvider({
+    name: 'webauthn',
+    credentials: {},
+    async authorize(_, req) {
+        const { id, response } = req.body ?? {};
+
+        if (!id || !response) {
+            return null;
+        }
+
+        await dbConnect();
+        const user = await User.findOne({ 'webAuthCredentials.credentialID': id });
+        if (!user) {
+            return null;
+        }
+
+        const credential = user.webAuthCredentials.find((cred: { credentialID: string }) => cred.credentialID === id);
+        if (!credential) {
+            return null;
+        }
+
+        const challenge = user.webAuthChallenge;
+        if (!challenge) {
+            return null;
+        }
+
+        try {
+            const verification = await verifyAuthenticationResponse({
+                response,
+                expectedChallenge: challenge,
+                expectedOrigin: origin,
+                expectedRPID: domain,
+                authenticator: {
+                    credentialPublicKey: credential.credentialPublicKey,
+                    credentialID: base64url.toBuffer(credential.credentialID),
+                    counter: credential.counter,
+                },
+            });
+
+            if (!verification.verified || !verification.authenticationInfo) {
+                return null;
+            }
+
+            credential.counter = verification.authenticationInfo.newCounter;
+            user.webAuthChallenge = null;
+            await user.save();
+
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+
+        return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+            role: user.role,
+            provider: user.provider,
+            lastLogin: user.lastLogin,
+            hasSeenModal: user.hasSeenModal,
+        };
+    }
+})
   ],
   callbacks: {
-    
     async redirect({ url, baseUrl }) {
       return baseUrl + "/dashboard";
     },
-    async jwt({ token, user, session, trigger }) {
-      if (trigger === "update" && session?.name !== token.name) {
-        token.name = session.name;
-
-        try {
-          if (token.name) {
-            await setName(token.name);
-          }
-        } catch (error) {
-          console.error("Failed to set user name:", error);
-        }
-      }
-
+    async jwt({ token, trigger, session, user }) {
       if (user) {
-        token.role = user.role
-        await clearStaleTokens(); // Clear up any stale verification tokens from the database after a successful sign in
-        return {
-          ...token,
-          id: user.id,
-        };
+        token.email = user.email;
+        token.name = user.name;
+        token.id = user.id;
+        token.image = user.image;
+        token.role = user.role;
+        token.hasSeenModal = user.hasSeenModal;
+        token.lastLogin = user.lastLogin;
+        await clearStaleTokens();
       }
       return token;
     },
     async session({ session, token }) {
-      console.log("session callback", { session, token });
-      session.user.role = token.role
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id as string,
-        },
-      };
+      await dbConnect();
+      const user = await User.findOne({ email: session?.user?.email });
+
+      if (user) {
+        user.lastLogin = new Date();
+        await user.save();
+        session.user = { ...session.user, ...user.toObject() };
+      } else {
+        session.user = { hasSeenModal: token.hasSeenModal, email: token.email, name: token.name, id: token.id, image: token.image, role: token.role, lastLogin: token.lastLogin, provider: token.provider };
+      }
+      return session;
     },
   },
-// });
+  debug: true,
 } as NextAuthOptions;

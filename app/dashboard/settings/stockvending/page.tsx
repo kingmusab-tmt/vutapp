@@ -21,7 +21,7 @@ const StockVending: React.FC = () => {
   };
 
   const calculateProfit = () => {
-     setCompanyPrice(1000); // Mock value
+    //  setCompanyPrice(1000); // Mock value
     return sellingPrice > companyPrice
    
       ? (sellingPrice - companyPrice) * 30 // Assume 30 items sold monthly

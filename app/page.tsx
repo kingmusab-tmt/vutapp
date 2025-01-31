@@ -1,12 +1,11 @@
 "use client";
 
-// import { SignInButton } from "./components/auth/sign-in-button";
-import UserDashboard from "./dashboard/userdashboard";
+import SignInPage from "./auth/sign-in/signin";
 
 const Home: React.FC = () => {
   return (
     <div>
-          <UserDashboard />
+          <SignInPage />
     </div>
   );
 };

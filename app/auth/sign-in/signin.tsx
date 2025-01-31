@@ -1,30 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { TextField, Button, Box, Typography, Container, Paper, Tooltip, CircularProgress } from "@mui/material";
 import { FcGoogle } from "react-icons/fc";
+import { FaFingerprint } from "react-icons/fa";
 import { handleEmailSignIn } from "@/lib/emailSignInServerAction";
 import Image from "next/image";
-import backgroundImage from "@/public/images/bg2 (1).jpg"; // Add your background image here
+import backgroundImage from "@/public/images/bg2 (1).jpg";
+import { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/types";
+import { startAuthentication } from "@simplewebauthn/browser";
 
 export const SignInPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState({ email: "" as string });
+  const [formData, setFormData] = useState({ email: "" });
+  const [canUseBiometric, setCanUseBiometric] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  useEffect(() => {
+    const checkPreviousSignIn = async () => {
+      const response = await fetch("/api/auth/webauthn/check-user", {
+        method: "POST",
+        body: JSON.stringify({ email: formData.email }),
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      setCanUseBiometric(data.hasPreviousSignIn);
+    };
+    if (formData.email) checkPreviousSignIn();
+  }, [formData.email]);
+
+  async function signInWithWebauthn() {
+    if (!canUseBiometric) {
+      alert("Please sign in with Email or Google first before using Biometric Authentication.");
+      return;
+    }
+
+    const url = new URL("/api/auth/webauthn/authenticate", window.location.origin);
+    url.search = new URLSearchParams({ email: formData.email }).toString();
+    const optionsResponse = await fetch(url.toString());
+
+    if (optionsResponse.status !== 200) {
+      throw new Error("Could not get authentication options from server");
+    }
+    const opt: PublicKeyCredentialRequestOptionsJSON = await optionsResponse.json();
+
+    if (!opt.allowCredentials || opt.allowCredentials.length === 0) {
+      throw new Error("There is no registered credential.");
+    }
+
+    const credential = await startAuthentication(opt);
+
+    await signIn("credentials", {
+      id: credential.id,
+      rawId: credential.rawId,
+      type: credential.type,
+      clientDataJSON: credential.response.clientDataJSON,
+      authenticatorData: credential.response.authenticatorData,
+      signature: credential.response.signature,
+      userHandle: credential.response.userHandle,
+    });
+  }
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     try {
-      startTransition(async () => {
-        await handleEmailSignIn(formData.email);
-        setLoading(false);
-      });
+      await signInWithWebauthn();
     } catch (error) {
-      console.error(error);
-      setLoading(false);
+      try {
+        startTransition(async () => {
+          await handleEmailSignIn(formData.email);
+          setLoading(false);
+        });
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
     }
   };
 
@@ -50,7 +103,7 @@ export const SignInPage: React.FC = () => {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setFormData({ email: event.target.value })}
+                onChange={(event) => setFormData({ email: event.target.value })}
                 disabled={isPending}
               />
               <Tooltip title={loading ? "Processing..." : "Sign in with your email"} arrow>
@@ -88,6 +141,21 @@ export const SignInPage: React.FC = () => {
                     disabled={isPending || loading}
                   >
                     {loading ? <CircularProgress size={20} color="inherit" /> : "Sign in with Google"}
+                  </Button>
+                </span>
+              </Tooltip>
+              <Tooltip title={!canUseBiometric ? "Sign in with Email or Google first" : "Sign in with Biometrics"} arrow>
+                <span>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="success"
+                    startIcon={<FaFingerprint />}
+                    onClick={signInWithWebauthn}
+                    sx={{ mt: 2 }}
+                    disabled={!canUseBiometric || loading}
+                  >
+                    Sign in with Biometrics
                   </Button>
                 </span>
               </Tooltip>
