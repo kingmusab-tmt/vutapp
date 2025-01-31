@@ -1,6 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { authOptions } from "@/app/auth";
-import { getServerSession } from "next-auth/next";
 import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
