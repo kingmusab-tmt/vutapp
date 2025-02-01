@@ -1,49 +1,47 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    try {
-      const {
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const {
+      amount,
+      customerName,
+      customerEmail,
+      paymentReference,
+      redirectUrl,
+    } = body;
+
+    const authString = Buffer.from(
+      `${process.env.MONNIFY_API_KEY}:${process.env.MONNIFY_SECRET_KEY}`
+    ).toString("base64");
+
+    const response = await axios.post(
+      "https://api.monnify.com/api/v1/merchant/transactions/init-transaction",
+      {
         amount,
         customerName,
         customerEmail,
         paymentReference,
+        paymentDescription: "Payment for goods",
+        currencyCode: "NGN",
+        contractCode: process.env.MONNIFY_CONTRACT_CODE,
         redirectUrl,
-      } = req.body;
-      const authString = Buffer.from(
-        `${process.env.MONNIFY_API_KEY}:${process.env.MONNIFY_SECRET_KEY}`
-      ).toString("base64");
-
-      const response = await axios.post(
-        "https://api.monnify.com/api/v1/merchant/transactions/init-transaction",
-        {
-          amount,
-          customerName,
-          customerEmail,
-          paymentReference,
-          paymentDescription: "Payment for goods",
-          currencyCode: "NGN",
-          contractCode: process.env.MONNIFY_CONTRACT_CODE,
-          redirectUrl,
+      },
+      {
+        headers: {
+          Authorization: `Basic ${authString}`,
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            Authorization: `Basic ${authString}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      }
+    );
 
-      res.status(200).json(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end("Method Not Allowed");
+    return NextResponse.json(response.data, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

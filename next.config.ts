@@ -3,8 +3,6 @@ import withTM from "next-transpile-modules";
 
 const nextConfig: NextConfig = withTM(["@simplewebauthn/browser"])({
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   reactStrictMode: true,
@@ -13,7 +11,6 @@ const nextConfig: NextConfig = withTM(["@simplewebauthn/browser"])({
       test: /\.css$/i,
       use: ["css-loader", "postcss-loader"],
     });
-
     return config;
   },
 });
