@@ -1,24 +1,24 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/connectdb";
 import Transaction from "@/models/transactions";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function GET(req: NextRequest) {
   try {
     await dbConnect(); // Connect to MongoDB
 
-    const { startDate, endDate } = req.query;
+    const { searchParams } = new URL(req.url);
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
 
     if (!startDate || !endDate) {
-      return res
-        .status(400)
-        .json({ error: "Start date and end date are required" });
+      return NextResponse.json(
+        { error: "Start date and end date are required" },
+        { status: 400 }
+      );
     }
 
-    const start = new Date(startDate as string);
-    const end = new Date(endDate as string);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
     // Fetch transactions within the date range
     const transactions = await Transaction.find({
@@ -39,16 +39,22 @@ export default async function handler(
       return acc;
     }, {} as Record<number, number>);
 
-    return res.status(200).json({
-      metrics: {
-        totalTransactions,
-        totalRevenue,
+    return NextResponse.json(
+      {
+        metrics: {
+          totalTransactions,
+          totalRevenue,
+        },
+        pieData,
+        barData,
       },
-      pieData,
-      barData,
-    });
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -1,11 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const eventData = req.body;
+export async function POST(req: NextRequest) {
+  try {
+    const eventData = await req.json();
 
     // Handle different webhook events
     switch (eventData.eventType) {
@@ -19,9 +16,12 @@ export default async function handler(
         console.log("Unhandled Event:", eventData.eventType);
     }
 
-    res.status(200).json({ status: "success" });
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end("Method Not Allowed");
+    return NextResponse.json({ status: "success" }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
