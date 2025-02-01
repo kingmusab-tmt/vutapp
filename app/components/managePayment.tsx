@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import UsersPage from "./users";
-import NotificationForm from "./notification";
+// import NotificationForm from "./notification";
 import SendBulkSMS from "./sendSms";
 
 const PaymentManagement: React.FC = () => {
@@ -14,7 +14,7 @@ const PaymentManagement: React.FC = () => {
       case "Airtime":
         return <UsersPage />;
       case "Cable Subscription":
-        return <NotificationForm />;
+        return "payment";
       case "Electricity":
         return <SendBulkSMS />;
       case "Bulk SMS":
@@ -28,34 +28,40 @@ const PaymentManagement: React.FC = () => {
     <div className="tab">
       <div className="tab-navigation">
         <button
-          className={`tablinks ${currentSection === "Users Details" ? "active" : ""}`}
+          className={`tablinks ${
+            currentSection === "Users Details" ? "active" : ""
+          }`}
           onClick={() => setCurrentSection("Users Details")}
         >
           Users Details
         </button>
         <button
-          className={`tablinks ${currentSection === "Manage User Role" ? "active" : ""}`}
+          className={`tablinks ${
+            currentSection === "Manage User Role" ? "active" : ""
+          }`}
           onClick={() => setCurrentSection("Manage User Role")}
         >
           Manage User Role
         </button>
         <button
-          className={`tablinks ${currentSection === "Notify User(s)" ? "active" : ""}`}
+          className={`tablinks ${
+            currentSection === "Notify User(s)" ? "active" : ""
+          }`}
           onClick={() => setCurrentSection("Notify User(s)")}
         >
           Notify User(s)
         </button>
         <button
-          className={`tablinks ${currentSection === "Send SMS to User(s)" ? "active" : ""}`}
+          className={`tablinks ${
+            currentSection === "Send SMS to User(s)" ? "active" : ""
+          }`}
           onClick={() => setCurrentSection("Send SMS to User(s)")}
         >
           Send SMS to User(s)
         </button>
       </div>
 
-      <div className="tabcontent">
-        {renderSection()}
-      </div>
+      <div className="tabcontent">{renderSection()}</div>
 
       <style jsx>{`
         .tab {
