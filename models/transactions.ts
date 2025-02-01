@@ -6,14 +6,15 @@ export interface ITransaction extends Document {
   balanceBefore: number; // Balance before transaction
   balanceAfter: number; // Balance after transaction
   status: string; // "Pending", "Successful", "Failed"
-  createDate: Date; // Date of the transaction
+  userId?: string;
+  transactionType: string;
+  referenceId: string;
 
   // Cable Subscription Fields
   iucOrSmartcardNumber?: number;
   planAmount?: number;
   cableId?: number;
   cablePlanId?: number;
-  userId?: string;
   refund?: boolean;
 
   // Bill Payment Fields
@@ -36,16 +37,32 @@ export interface ITransaction extends Document {
 
   // Funding Transaction Fields
   fundingType?: "Manual" | "Automatic"; // Specific to funding transactions
+  fundingSource?: "API" | "Admin";
 }
 
 const transactionSchema = new Schema<ITransaction>(
   {
-    type: { type: String, required: true, enum: ["CableSubscription", "BillPayment", "ManualFunding", "AutomaticFunding", "DataTransaction"] },
+    type: {
+      type: String,
+      required: true,
+      enum: [
+        "CableSubscription",
+        "BillPayment",
+        "ManualFunding",
+        "AutomaticFunding",
+        "DataTransaction",
+      ],
+    },
     amount: { type: Number },
     balanceBefore: { type: Number, required: true },
     balanceAfter: { type: Number, required: true },
-    status: { type: String, required: true, enum: ["Pending", "Successful", "Failed"] },
-    createDate: { type: Date, default: Date.now },
+    status: {
+      type: String,
+      required: true,
+      enum: ["Pending", "Successful", "Failed"],
+    },
+    transactionType: { type: String, required: true },
+    referenceId: { type: String, required: true, unique: true },
 
     // Cable Subscription Fields
     iucOrSmartcardNumber: { type: Number, required: true },
@@ -75,6 +92,8 @@ const transactionSchema = new Schema<ITransaction>(
 
     // Funding Transaction Fields
     fundingType: { type: String, enum: ["Manual", "Automatic"] },
+
+    fundingSource: { type: String, enum: ["API", "Admin"] },
   },
   {
     timestamps: true, // Automatically manage createdAt and updatedAt fields
@@ -82,6 +101,8 @@ const transactionSchema = new Schema<ITransaction>(
 );
 
 // Create the model if it doesn't already exist
-const Transaction = mongoose.models.Transaction || model<ITransaction>("Transaction", transactionSchema);
+const Transaction =
+  mongoose.models.Transaction ||
+  model<ITransaction>("Transaction", transactionSchema);
 
 export default Transaction;
