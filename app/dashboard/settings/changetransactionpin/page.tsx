@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   Box,
@@ -32,7 +33,10 @@ const ChangePassword: React.FC = () => {
       setMessage({ text: response.data.message, type: "success" });
       setResetRequested(true);
     } catch (error) {
-      const errorMessage = axios.isAxiosError(error) && error.response?.data?.error ? error.response.data.error : "Failed to request reset code";
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.error
+          ? error.response.data.error
+          : "Failed to request reset code";
       setMessage({ text: errorMessage, type: "error" });
     } finally {
       setLoading(false);
@@ -43,7 +47,10 @@ const ChangePassword: React.FC = () => {
   // Handle PIN Update
   const handleUpdatePin = async () => {
     if (!resetCode) {
-      setMessage({ text: "Please enter the reset code sent to your email", type: "error" });
+      setMessage({
+        text: "Please enter the reset code sent to your email",
+        type: "error",
+      });
       setOpenSnackbar(true);
       return;
     }
@@ -62,10 +69,16 @@ const ChangePassword: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("/api/users/resetTransactionPin", { resetCode, newPin });
+      const response = await axios.post("/api/users/resetTransactionPin", {
+        resetCode,
+        newPin,
+      });
       setMessage({ text: response.data.message, type: "success" });
     } catch (error) {
-      const errorMessage = axios.isAxiosError(error) && error.response?.data?.error ? error.response.data.error : "Failed to request reset code";
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.error
+          ? error.response.data.error
+          : "Failed to request reset code";
       setMessage({ text: errorMessage, type: "error" });
     } finally {
       setLoading(false);
@@ -116,7 +129,9 @@ const ChangePassword: React.FC = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={() => setShowConfirmPin((prev) => !prev)}>
+                  <IconButton
+                    onClick={() => setShowConfirmPin((prev) => !prev)}
+                  >
                     {showConfirmPin ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -149,8 +164,15 @@ const ChangePassword: React.FC = () => {
       </Button>
 
       {/* Snackbar for Notifications */}
-      <Snackbar open={openSnackbar} autoHideDuration={4000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity={message.type as "success" | "error"}>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity={message.type as "success" | "error"}
+        >
           {message.text}
         </Alert>
       </Snackbar>

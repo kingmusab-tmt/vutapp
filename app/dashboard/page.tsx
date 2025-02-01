@@ -1,4 +1,3 @@
-
 import { checkIsAuthenticated } from "@/lib/checkIsAuthenticated";
 import { redirect } from "next/navigation";
 import DashboardHome from "./userdashboard";
@@ -10,7 +9,6 @@ const Dashboard: React.FC = async () => {
     redirect("/auth/sign-in");
   } else {
     return <DashboardHome />;
-      //  return <AdminDashboard />;
   }
 };
 

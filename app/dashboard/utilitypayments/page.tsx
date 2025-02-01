@@ -92,7 +92,11 @@ const UtilityPayments: React.FC = () => {
         meterNumber &&
         billAmount &&
         customerNumber
-      : selectedBillType && billPaymentType && meterNumber && billAmount && customerNumber;
+      : selectedBillType &&
+        billPaymentType &&
+        meterNumber &&
+        billAmount &&
+        customerNumber;
 
   const isSubmitEnabled =
     selectedUtilityType === "Cable Payment"
@@ -146,7 +150,9 @@ const UtilityPayments: React.FC = () => {
                 <ToggleButton
                   value={provider}
                   selected={selectedCableProvider === provider}
-                  onClick={() => setSelectedCableProvider(provider as CableProvider)}
+                  onClick={() =>
+                    setSelectedCableProvider(provider as CableProvider)
+                  }
                   sx={{ width: "100%", height: { xs: "250%", lg: "150px" } }}
                 >
                   <Box
@@ -244,9 +250,7 @@ const UtilityPayments: React.FC = () => {
               <Select
                 fullWidth
                 value={selectedElectricityProvider || ""}
-                onChange={(e) =>
-                  setSelectedElectricityProvider(e.target.value)
-                }
+                onChange={(e) => setSelectedElectricityProvider(e.target.value)}
                 displayEmpty
                 sx={{ mb: 2 }}
               >

@@ -45,7 +45,7 @@ export default function DashboardHome() {
         setOpenModal(true);
       }
     };
-    
+
     fetchUserInfo();
   }, [session]);
 
@@ -100,7 +100,9 @@ export default function DashboardHome() {
       <Box sx={{ marginY: 3, textAlign: "center" }}>
         <Typography variant="body1">
           You are on: <strong>Smart Earner</strong>
-          <Button variant="contained" color="primary">Upgrade</Button>
+          <Button variant="contained" color="primary">
+            Upgrade
+          </Button>
         </Typography>
         <Typography variant="body1">
           Refer and Earn: <strong>Click to Copy Referral Link</strong>
@@ -109,11 +111,18 @@ export default function DashboardHome() {
 
       {/* Wallet Info Section */}
       <Grid container spacing={3}>
-        {["Wallet Balance", "Profit from sales", "Referral Bonus", "Other Bonus"].map((label, index) => (
+        {[
+          "Wallet Balance",
+          "Profit from sales",
+          "Referral Bonus",
+          "Other Bonus",
+        ].map((label, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Paper elevation={3} sx={{ padding: 2, textAlign: "center" }}>
               <Typography variant="h6">{label}</Typography>
-              <Typography variant="h4" color="blue">0.00</Typography>
+              <Typography variant="h4" color="blue">
+                0.00
+              </Typography>
             </Paper>
           </Grid>
         ))}
@@ -122,16 +131,56 @@ export default function DashboardHome() {
       {/* Categories Section */}
       <Grid container spacing={3} sx={{ marginTop: 3 }}>
         {[
-          { label: "Data", icon: <FourGPlusMobiledata fontSize="large" color="primary" />, section: "buydata" },
-          { label: "Airtime", icon: <PhoneInTalk fontSize="large" color="primary" />, section: "buyairtime" },
-          { label: "Electricity", icon: <Bolt fontSize="large" color="primary" />, section: "utilitypayments" },
-          { label: "Cable Sub", icon: <Tv fontSize="large" color="primary" />, section: "utilitypayments" },
-          { label: "Bulk SMS", icon: <Sms fontSize="large" color="primary" />, section: "buydata" },
-          { label: "Referrals", icon: <Groups fontSize="large" color="primary" />, section: "myreferrals" },
-          { label: "Transactions", icon: <ReceiptLong fontSize="large" color="primary" />, section: "transactions" },
-          { label: "Pricing", icon: <RequestQuote fontSize="large" color="primary" />, section: "pricing" },
-          { label: "Profile", icon: <Person fontSize="large" color="primary" />, section: "settings" },
-          { label: "Fund Wallet", icon: <Payments fontSize="large" color="primary" />, section: "fundwallet" },
+          {
+            label: "Data",
+            icon: <FourGPlusMobiledata fontSize="large" color="primary" />,
+            section: "buydata",
+          },
+          {
+            label: "Airtime",
+            icon: <PhoneInTalk fontSize="large" color="primary" />,
+            section: "buyairtime",
+          },
+          {
+            label: "Electricity",
+            icon: <Bolt fontSize="large" color="primary" />,
+            section: "utilitypayments",
+          },
+          {
+            label: "Cable Sub",
+            icon: <Tv fontSize="large" color="primary" />,
+            section: "utilitypayments",
+          },
+          {
+            label: "Bulk SMS",
+            icon: <Sms fontSize="large" color="primary" />,
+            section: "buydata",
+          },
+          {
+            label: "Referrals",
+            icon: <Groups fontSize="large" color="primary" />,
+            section: "myreferrals",
+          },
+          {
+            label: "Transactions",
+            icon: <ReceiptLong fontSize="large" color="primary" />,
+            section: "transactions",
+          },
+          {
+            label: "Pricing",
+            icon: <RequestQuote fontSize="large" color="primary" />,
+            section: "pricing",
+          },
+          {
+            label: "Profile",
+            icon: <Person fontSize="large" color="primary" />,
+            section: "settings",
+          },
+          {
+            label: "Fund Wallet",
+            icon: <Payments fontSize="large" color="primary" />,
+            section: "fundwallet",
+          },
         ].map((item, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Paper
@@ -152,11 +201,18 @@ export default function DashboardHome() {
           Transaction Statistics
         </Typography>
         <Grid container spacing={3}>
-          {["Total Funding", "Current Month", "Previous Month", "Total Data Sold"].map((label, index) => (
+          {[
+            "Total Funding",
+            "Current Month",
+            "Previous Month",
+            "Total Data Sold",
+          ].map((label, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Paper elevation={3} sx={{ padding: 2, textAlign: "center" }}>
                 <Typography variant="h6">{label}</Typography>
-                <Typography variant="h4" color="blue">0.00</Typography>
+                <Typography variant="h4" color="blue">
+                  0.00
+                </Typography>
               </Paper>
             </Grid>
           ))}
@@ -182,12 +238,9 @@ export default function DashboardHome() {
           <Typography variant="h6" gutterBottom>
             Complete Your KYC
           </Typography>
-          <KycForm handleCloseModal={handleCloseModal} /> {/* Render the KYC Form */}
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={handleCloseModal}
-          >
+          <KycForm handleCloseModal={handleCloseModal} />{" "}
+          {/* Render the KYC Form */}
+          <Button variant="contained" sx={{ mt: 2 }} onClick={handleCloseModal}>
             Dismiss
           </Button>
         </Box>

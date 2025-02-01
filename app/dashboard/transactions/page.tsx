@@ -48,7 +48,8 @@ const Transactions: React.FC = () => {
 
     if (filterType) {
       filtered = filtered.filter(
-        (transaction) => transaction.type.toLowerCase() === filterType.toLowerCase()
+        (transaction) =>
+          transaction.type.toLowerCase() === filterType.toLowerCase()
       );
     }
 
@@ -206,7 +207,9 @@ const Transactions: React.FC = () => {
           </TableHead>
           <TableBody>
             {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((transaction) => renderTransactionRow(transaction))
+              filteredTransactions.map((transaction) =>
+                renderTransactionRow(transaction)
+              )
             ) : (
               <TableRow>
                 <TableCell colSpan={4} align="center">

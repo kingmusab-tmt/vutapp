@@ -1,41 +1,38 @@
 import dbConnect from "@/lib/connectdb";
+import {DataPlan, AirtimePlan, CableSubscription, BillPayment} from "@/models/dataAirtimeUtil";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest) {
-  const { network, planType, airtimeType, cableType, billType, available } = await req.json();
-
-  const db = await dbConnect();
+  await dbConnect(); // Ensure the database is connected
 
   try {
-    let collectionName = "";
+    const { network, planType, airtimeType, cableType, billType, available } = await req.json();
+
+    let model;
     let filter = {};
     let update = { $set: { available } };
 
     if (network && planType) {
-      // Handle Data Plans
-      collectionName = "DataPlans";
+      model = DataPlan;
       filter = { network, planType };
     } else if (network && airtimeType) {
-      // Handle Airtime
-      collectionName = "AirtimePlan";
+      model = AirtimePlan;
       filter = { network, airtimeType };
     } else if (cableType) {
-      // Handle Cable
-      collectionName = "CableSubscription";
+      model = CableSubscription;
       filter = { cableType };
     } else if (billType) {
-      // Handle Bills
-      collectionName = "BillPayment";
+      model = BillPayment;
       filter = { billType };
     } else {
       return NextResponse.json({ error: "Invalid parameters." }, { status: 400 });
     }
 
-    console.log("this is the filter and update", filter, update);
-      const collection = db.collection(collectionName);
-      console.log("this is the collection", collection);
-    //   console.log(collection, filter, update);
-    const result = await collection.updateMany(filter, update)
+    if (!model) {
+      return NextResponse.json({ error: "Invalid model selection." }, { status: 400 });
+    }
+
+    const result = await model.updateMany(filter, update);
 
     if (result.modifiedCount > 0) {
       return NextResponse.json({ message: "Availability updated successfully." }, { status: 200 });

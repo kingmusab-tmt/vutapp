@@ -18,8 +18,7 @@ export const getAccountLinkStatus = async () => {
   }
 
   // Sanitize input
-  const uuidRegExp: RegExp =
-    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const uuidRegExp: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (typeof email !== "string" || !uuidRegExp.test(email)) {
     throw new Error("Invalid UUID");
   }
@@ -27,11 +26,10 @@ export const getAccountLinkStatus = async () => {
   // Check if the user has a Google account linked in MongoDB
   try {
     await dbConnect();
-    
 
     const accountExists = await User.findOne({
       provider: "email",
-      email
+      email,
     });
 
     // If no matching account is found, return false

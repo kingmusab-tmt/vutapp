@@ -1,110 +1,20 @@
-// "use client"
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import {
-//   Box,
-//   Typography,
-//   Switch,
-// } from "@mui/material";
-// import { registerWebauthn } from "@/utils/registerauth";
-// import SetupTransactionPin from "@/app/components/settransactionpin";
-
-
-    
-// const EnableThumbprint: React.FC = () => {
- 
-//   const [thumbprintEnabled, setThumbprintEnabled] = useState<boolean>(false);
-//   const [transactionPinEnabled, setTransactionPinEnabled] = useState<boolean>(false);
-
-//   useEffect(() => {
-//   const fetchStatus = async () => {
-//     try {
-//       const response = await axios.get("/api/thumbandtransactionstatus");
-//       setThumbprintEnabled(response.data.thumbprintStatus ?? false);
-//       setTransactionPinEnabled(response.data.transactionStatus ?? false);
-//     } catch (error) {
-//       console.error("Error fetching authentication status", error);
-//       setThumbprintEnabled(false);
-//       setTransactionPinEnabled(false);
-//     }
-//   };
-//   fetchStatus();
-// }, []);
-
-
-
-//   const handleThumbprintToggle = async () => {
-//     try {
-//       if (!thumbprintEnabled) await registerWebauthn();
-//       const newStatus = !thumbprintEnabled;
-//       await axios.post("/api/thumbandtransactionstatus", { thumbprintStatus: newStatus });
-//       setThumbprintEnabled(newStatus);
-//     } catch (error) {
-//       console.error("Error updating thumbprint status", error);
-//     }
-//   };
-
-//   const handleTransactionPinToggle = async () => {
-//     try {
-//       const newStatus = !transactionPinEnabled;
-//       await axios.post("/api/thumbandtransactionstatus", { transactionStatus: newStatus });
-//       setTransactionPinEnabled(newStatus);
-//     } catch (error) {
-//       console.error("Error updating transaction PIN status", error);
-//     }
-//   };
-
-//   return (
-//     <Box sx={{ mt: 3 }}>
-//       <Typography variant="h6" sx={{ mb: 2 }}>
-//         Enable Thumbprint
-//       </Typography>
-//       <Box sx={{ display: "flex", alignItems: "center" }}>
-//         <Typography>Enable Thumbprint Authentication</Typography>
-//         <Switch
-//           checked={thumbprintEnabled}
-//           onChange={handleThumbprintToggle}
-//           color="primary"
-//           sx={{ ml: 2 }}
-//         />
-//       </Box>
-//       <Typography variant="h6" sx={{ mb: 2 }}>
-//         Enable Transaction Pin
-//       </Typography>
-//       <Box sx={{ display: "flex", alignItems: "center" }}>
-//         <Typography>Enable Transaction Pin</Typography>
-//         <Switch
-//           checked={transactionPinEnabled}
-//           onChange={handleTransactionPinToggle}
-//           color="primary"
-//           sx={{ ml: 2 }}
-//         />
-//       </Box>
-//     </Box>
-//   );
-// };
-// export default EnableThumbprint;
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Box,
-  Typography,
-  Switch,
-  Modal,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Box, Typography, Switch, Modal, Snackbar, Alert } from "@mui/material";
 import { registerWebauthn } from "@/utils/registerauth";
 import SetupTransactionPin from "@/app/components/settransactionpin";
 
 const EnableThumbprint: React.FC = () => {
   const [thumbprintEnabled, setThumbprintEnabled] = useState<boolean>(false);
-  const [transactionPinEnabled, setTransactionPinEnabled] = useState<boolean>(false);
+  const [transactionPinEnabled, setTransactionPinEnabled] =
+    useState<boolean>(false);
   const [showPinModal, setShowPinModal] = useState<boolean>(false);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -125,7 +35,9 @@ const EnableThumbprint: React.FC = () => {
     try {
       if (!thumbprintEnabled) await registerWebauthn();
       const newStatus = !thumbprintEnabled;
-      await axios.post("/api/thumbandtransactionstatus", { thumbprintStatus: newStatus });
+      await axios.post("/api/thumbandtransactionstatus", {
+        thumbprintStatus: newStatus,
+      });
       setThumbprintEnabled(newStatus);
       setSnackbarMessage("Thumbprint authentication updated successfully");
       setSnackbarSeverity("success");
@@ -144,7 +56,9 @@ const EnableThumbprint: React.FC = () => {
         setShowPinModal(true);
       } else {
         const newStatus = !transactionPinEnabled;
-        await axios.post("/api/thumbandtransactionstatus", { transactionStatus: newStatus });
+        await axios.post("/api/thumbandtransactionstatus", {
+          transactionStatus: newStatus,
+        });
         setTransactionPinEnabled(newStatus);
         setSnackbarMessage("Transaction PIN disabled successfully");
         setSnackbarSeverity("success");
@@ -216,8 +130,16 @@ const EnableThumbprint: React.FC = () => {
       </Modal>
 
       {/* Snackbar for notifications */}
-      <Snackbar open={snackbarOpen} autoHideDuration={4000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

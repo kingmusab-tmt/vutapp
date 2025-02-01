@@ -37,10 +37,10 @@ const Referrals: React.FC = () => {
     const fetchReferrals = async () => {
       try {
         const response = await axios.get("/api/referrals"); // Replace with your API endpoint
-        if (response){
-        setReferrals(response.data as Referral[]);
+        if (response) {
+          setReferrals(response.data as Referral[]);
           setFilteredReferrals(response.data as Referral[]);
-          }
+        }
       } catch (error) {
         console.error("Error fetching referrals:", error);
       }
@@ -134,10 +134,12 @@ const Referrals: React.FC = () => {
                 <Typography variant="body2">Email: {referral.email}</Typography>
                 <Typography variant="body2">Phone: {referral.phone}</Typography>
                 <Typography variant="body2">
-                  Date Joined: {new Date(referral.dateJoined).toLocaleDateString()}
+                  Date Joined:{" "}
+                  {new Date(referral.dateJoined).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body2">
-                  Last Login: {new Date(referral.lastLogin).toLocaleDateString()}
+                  Last Login:{" "}
+                  {new Date(referral.lastLogin).toLocaleDateString()}
                 </Typography>
               </CardContent>
             </Card>

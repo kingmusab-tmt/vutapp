@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       await user.save();
 
       // Send new reset code to email
-             const transporter = nodemailer.createTransport({
+      const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_SERVER_HOST!,
         port: 465,
         secure: true, // true for 465, false for other ports
@@ -45,18 +45,27 @@ export async function POST(req: NextRequest) {
       });
 
       await transporter.sendMail({
-       from: '"SABAMUENT" <info@triplemultipurposetechnology.com.ng>',
-      to: user.email,
+        from: '"SABAMUENT" <info@triplemultipurposetechnology.com.ng>',
+        to: user.email,
         subject: "New Transaction PIN Reset Code",
         text: `Your reset code has been reset due to multiple incorrect attempts. Your new code: ${newResetCode} (Expires in 10 minutes).`,
       });
 
-      return NextResponse.json({ error: "Too many failed attempts. A new reset code has been sent to your email." }, { status: 429 });
+      return NextResponse.json(
+        {
+          error:
+            "Too many failed attempts. A new reset code has been sent to your email.",
+        },
+        { status: 429 }
+      );
     }
 
     // 🔥 Debugging Logs
     console.log("Stored Reset Code:", user.transactionPinResetCode);
-    console.log("Stored Expiry:", new Date(user.transactionPinResetExpires).getTime());
+    console.log(
+      "Stored Expiry:",
+      new Date(user.transactionPinResetExpires).getTime()
+    );
     console.log("Current Time:", Date.now());
     console.log("Received Reset Code:", resetCode);
 
@@ -68,13 +77,19 @@ export async function POST(req: NextRequest) {
     ) {
       user.failedResetAttempts += 1;
       await user.save();
-      return NextResponse.json({ error: "Invalid or expired reset code" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid or expired reset code" },
+        { status: 400 }
+      );
     }
 
     // Validate PIN format (5-digit numeric)
     const pinRegex = /^\d{5}$/;
     if (!pinRegex.test(newPin)) {
-      return NextResponse.json({ error: "PIN must be exactly 5 digits" }, { status: 400 });
+      return NextResponse.json(
+        { error: "PIN must be exactly 5 digits" },
+        { status: 400 }
+      );
     }
 
     // Update transaction PIN and reset fields
@@ -84,9 +99,15 @@ export async function POST(req: NextRequest) {
     user.failedResetAttempts = 0;
     await user.save();
 
-    return NextResponse.json({ message: "Transaction PIN updated successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Transaction PIN updated successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating transaction PIN:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

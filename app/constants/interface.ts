@@ -88,7 +88,6 @@ export interface Property {
 export interface Transaction {
   title: string;
   createdAt: string | number | Date;
-  _id;
   userName: string;
   email: string;
   transactionId: string;

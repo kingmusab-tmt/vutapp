@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateRegistrationOptions, verifyRegistrationResponse } from '@simplewebauthn/server';
 import { getServerSession } from 'next-auth';
-import { getSession } from 'next-auth/react';
 import dbConnect from '@/lib/connectdb';
 import { RegistrationResponseJSON } from '@simplewebauthn/types';
 import { getChallenge, saveChallenge, saveCredentials } from '@/lib/webauthn';

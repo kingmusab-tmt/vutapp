@@ -1,4 +1,3 @@
-// pages/api/cableplans.ts
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/connectdb';
 import { CableSubscription } from '@/models/dataAirtimeUtil';

@@ -1,21 +1,3 @@
-// "use client";
-
-// import { handleSignOut } from "@/lib/signOutServerAction";
-
-// export const SignOutButton = (props: {
-//   children?: React.ReactNode;
-//   className?: string;
-// }) => {
-//   return (
-//     <button
-//       className={props.className}
-//       style={{ cursor: "pointer" }}
-//       onClick={() => handleSignOut()}
-//     >
-//       {props.children || "Sign Out"}
-//     </button>
-//   );
-// };
 "use client";
 
 import { useState } from "react";

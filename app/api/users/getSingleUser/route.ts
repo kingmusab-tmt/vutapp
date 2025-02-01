@@ -4,7 +4,7 @@ import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest, res: NextResponse) {
   const _id = req.nextUrl.searchParams.get("id");
   const email = req.nextUrl.searchParams.get("email");
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         { status: 404 }
       );
     }
-    return NextResponse.json(user, {status: 200});
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error }, { status: 500 });
   }

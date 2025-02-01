@@ -11,13 +11,12 @@ import {
   Button,
   ToggleButton,
   Box,
-  
 } from "@mui/material";
 import Image from "next/image";
-import mtnLogo from "../../../public/images/mtn.png"
-import airtelLogo from "../../../public/images/aritel.png"
-import mobile9Logo from "../../../public/images/9mobile.png"
-import gloLogo from "../../../public/images/glo.jpg"
+import mtnLogo from "../../../public/images/mtn.png";
+import airtelLogo from "../../../public/images/aritel.png";
+import mobile9Logo from "../../../public/images/9mobile.png";
+import gloLogo from "../../../public/images/glo.jpg";
 
 const plans = {
   MTN: {
@@ -84,7 +83,9 @@ const BuyData: React.FC = () => {
       </Typography>
 
       {/* Select Network */}
-      <Typography variant="h6" sx={{ marginBottom: "10px",}}>Click Network You want to</Typography>
+      <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+        Click Network You want to
+      </Typography>
       <Grid container spacing={2}>
         {Object.keys(plans).map((network) => (
           <Grid item xs={3} key={network}>
@@ -92,13 +93,13 @@ const BuyData: React.FC = () => {
               value={network}
               selected={selectedNetwork === network}
               onClick={() => handleNetworkSelect(network as PlanKeys)}
-            
               sx={{
-                width: {xs: "100%", lg: "100px"},
+                width: { xs: "100%", lg: "100px" },
                 height: { xs: "250%", lg: "100px" },
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",}}
+                justifyContent: "center",
+              }}
             >
               <Box
                 sx={{
@@ -109,22 +110,22 @@ const BuyData: React.FC = () => {
                   justifyContent: "center",
                 }}
               >
-              <Image
-                src={
-                  network === "MTN"
-                    ? mtnLogo
-                    : network === "Airtel"
-                    ? airtelLogo
-                    : network === "Glo"
-                    ? gloLogo
-                    : mobile9Logo
-                }
-                alt={network}
-                layout="fill"
-                objectFit="fill"
-                //  
+                <Image
+                  src={
+                    network === "MTN"
+                      ? mtnLogo
+                      : network === "Airtel"
+                      ? airtelLogo
+                      : network === "Glo"
+                      ? gloLogo
+                      : mobile9Logo
+                  }
+                  alt={network}
+                  layout="fill"
+                  objectFit="fill"
+                  //
                 />
-                </Box>
+              </Box>
             </ToggleButton>
           </Grid>
         ))}
@@ -160,20 +161,22 @@ const BuyData: React.FC = () => {
             Select Plan
           </Typography>
           <Grid container spacing={2}>
-            {(plans[selectedNetwork][selectedPlanType as keyof typeof plans[PlanKeys]] || []).map(
-              (plan) => (
-                <Grid item xs={3} key={plan}>
-                  <ToggleButton
-                    value={plan}
-                    selected={selectedPlan === plan}
-                    onClick={() => handlePlanSelect(plan)}
-                    sx={{ width: "100%", height: "50px" }}
-                  >
-                    {plan}
-                  </ToggleButton>
-                </Grid>
-              )
-            )}
+            {(
+              plans[selectedNetwork][
+                selectedPlanType as keyof (typeof plans)[PlanKeys]
+              ] || []
+            ).map((plan) => (
+              <Grid item xs={3} key={plan}>
+                <ToggleButton
+                  value={plan}
+                  selected={selectedPlan === plan}
+                  onClick={() => handlePlanSelect(plan)}
+                  sx={{ width: "100%", height: "50px" }}
+                >
+                  {plan}
+                </ToggleButton>
+              </Grid>
+            ))}
           </Grid>
         </>
       )}

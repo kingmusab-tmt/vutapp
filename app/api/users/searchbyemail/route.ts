@@ -3,7 +3,7 @@ import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest, response: NextResponse) {
   const session = await getServerSession();
   const email = session?.user?.email;

@@ -25,15 +25,15 @@ export async function POST(req: NextRequest) {
     await user.save();
 
     // Send email with reset code
-        const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_SERVER_HOST!,
-  port: 465,
-  secure: true, // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_FROM!,
-    pass: process.env.EMAIL_SERVER_PASSWORD!,
-  },
-});
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_SERVER_HOST!,
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: process.env.EMAIL_FROM!,
+        pass: process.env.EMAIL_SERVER_PASSWORD!,
+      },
+    });
 
     await transporter.sendMail({
       from: '"TMTech" <info@triplemultipurposetechnology.com.ng>',
@@ -42,9 +42,15 @@ export async function POST(req: NextRequest) {
       text: `Your transaction PIN reset code is: ${resetCode}\n\nThis code expires in 10 minutes.`,
     });
 
-    return NextResponse.json({ message: "Reset code sent to email" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Reset code sent to email" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error sending reset code:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

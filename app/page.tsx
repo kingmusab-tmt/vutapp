@@ -5,7 +5,7 @@ import SignInPage from "./auth/sign-in/signin";
 const Home: React.FC = () => {
   return (
     <div>
-          <SignInPage />
+      <SignInPage />
     </div>
   );
 };

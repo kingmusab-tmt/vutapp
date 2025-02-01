@@ -2,9 +2,9 @@ import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth"
+import { authOptions } from "@/auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export async function DELETE(req: NextRequest) {
   const _id = req.nextUrl.searchParams.get("id");
   await dbConnect();
@@ -43,22 +43,3 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: false, error: error }, { status: 400 });
   }
 }
-
-// export default authMiddleware(
-//   roleMiddleware(
-//     async (req: NextApiRequest, res: NextApiResponse) => {
-//       const { method } = req;
-
-//       switch (method) {
-//         case "DELETE":
-//           return await DELETE(req, res);
-//         default:
-//           return NextResponse.json(
-//             { success: false, error: "Method not allowed" },
-//             { status: 405 }
-//           );
-//       }
-//     },
-//     ["admin"]
-//   )
-// );

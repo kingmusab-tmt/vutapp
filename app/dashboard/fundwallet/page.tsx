@@ -125,8 +125,12 @@ const FundWallet: React.FC = () => {
           {oneTimeAccount ? (
             <Box>
               <Typography>Bank Name: {oneTimeAccount.bankName}</Typography>
-              <Typography>Account Number: {oneTimeAccount.accountNumber}</Typography>
-              <Typography>Account Name: {oneTimeAccount.accountName}</Typography>
+              <Typography>
+                Account Number: {oneTimeAccount.accountNumber}
+              </Typography>
+              <Typography>
+                Account Name: {oneTimeAccount.accountName}
+              </Typography>
             </Box>
           ) : (
             <Typography>Loading one-time account details...</Typography>

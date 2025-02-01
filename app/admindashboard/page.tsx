@@ -1,7 +1,5 @@
-// import { DashboardPage } from "./dashboard";
 import { checkIsAuthenticated } from "@/lib/checkIsAuthenticated";
 import { redirect } from "next/navigation";
-// import AdminDashboard from "./admindashboard";
 import AdminDashboard from "./admindashboard";
 
 const Dashboard: React.FC = async () => {
@@ -11,7 +9,6 @@ const Dashboard: React.FC = async () => {
     redirect("/auth/sign-in");
   } else {
     return <AdminDashboard />;
-      //  return <AdminDashboard />;
   }
 };
 
