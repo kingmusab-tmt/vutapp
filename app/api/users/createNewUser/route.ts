@@ -1,6 +1,6 @@
-import dbConnect from "../../../../utils/connectDB";
+import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
 import { sendVerificationEmail } from "@/utils/mail";
 import { v4 as uuidv4 } from "uuid";
@@ -99,8 +99,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
 
     // Hash the password before saving
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const token = uuidv4();
 
     // Create a new user

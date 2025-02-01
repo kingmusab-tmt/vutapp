@@ -4,7 +4,7 @@ import {
   FaLinkedinIn,
   FaInstagram,
 } from "react-icons/fa";
-import logo from "../../../public/ajibestlogo.png";
+import logo from "@/public/images/sabmuent.jpeg";
 import Image from "next/image";
 import Link from "next/link";
 

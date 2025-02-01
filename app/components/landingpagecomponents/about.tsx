@@ -1,5 +1,5 @@
 import Image from "next/image";
-import companyLogo from "../../../public/ajibestlogo.png"; // Adjust the path according to your project structure
+import companyLogo from "@/public/images/sabmuent.jpeg"; // Adjust the path according to your project structure
 
 const About = () => {
   return (

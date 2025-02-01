@@ -1,6 +1,5 @@
 import Image from "next/image";
-import SerImg from "../../../public/images/services.png";
-import icon1 from "../../../public/images/farmhouse.png";
+import SerImg from "@/public/images/9mobile.png";
 
 interface Service {
   name: string;

@@ -34,13 +34,13 @@ export async function POST(req: NextRequest) {
       await user.save();
 
       // Send new reset code to email
-      const transporter = nodemailer.createTransport({
-        host: "mail.triplemultipurposetechnology.com.ng",
+             const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_SERVER_HOST!,
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-          user: "info@triplemultipurposetechnology.com.ng",
-          pass: "Nevers@1994",
+          user: process.env.EMAIL_FROM!,
+          pass: process.env.EMAIL_SERVER_PASSWORD!,
         },
       });
 

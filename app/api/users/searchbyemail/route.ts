@@ -1,12 +1,11 @@
-import dbConnect from "../../../../utils/connectDB";
+import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "@/app/auth";
 import { getServerSession } from "next-auth";
 
 export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest, response: NextResponse) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   const email = session?.user?.email;
 
   if (typeof email !== "string") {

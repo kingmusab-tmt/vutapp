@@ -1,14 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../../../../utils/connectDB";
-import User from "../../../../models/user";
-import authMiddleware from "../../../../utils/authMiddleware";
-import roleMiddleware from "../../../../utils/roleMiddleware";
-import { NextResponse } from "next/server";
+import dbConnect from "@/lib/connectdb";
+import User from "@/models/user";
+import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/auth"
+import { authOptions } from "@/auth"
 
 export const dynamic = 'force-dynamic';
-export async function DELETE(req) {
+export async function DELETE(req: NextRequest) {
   const _id = req.nextUrl.searchParams.get("id");
   await dbConnect();
 
