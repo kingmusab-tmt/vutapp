@@ -1,11 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 const ChangePassword: React.FC = () => {
-  const { data: session } = useSession();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
