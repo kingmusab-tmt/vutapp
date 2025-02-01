@@ -48,7 +48,7 @@ const userSchema = yup.object().shape({
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   await dbConnect();
 
   try {
