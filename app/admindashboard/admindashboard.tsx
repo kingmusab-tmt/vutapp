@@ -31,7 +31,7 @@ import { signOut } from "next-auth/react";
 import UserManagement from "../components/manageUser";
 import ServiceManagement from "../components/manageServices";
 import ApiManagement from "../components/manageAPI";
-import Transactions from "../components/transactionhistory";
+// import Transactions from "../components/transactionhistory";
 import AccountSettings from "../components/settings";
 import Overview from "./overview";
 
@@ -70,7 +70,7 @@ const AdminDashboard: React.FC = () => {
       case "apis management":
         return <ApiManagement />;
       case "transaction":
-        return <Transactions />;
+        return "Transaction";
       case "settings":
         return <AccountSettings />;
       default:

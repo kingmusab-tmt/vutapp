@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import UserCard from "./userCard";
 // import userProfile from "./userProfile";
-import { User } from "../constants/interface"
-import UserProfile from "./userProfile";
+import { User } from "../constants/interface";
+// import UserProfile from "./userProfile";
 
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -51,7 +51,6 @@ const UsersPage = () => {
       {selectedUser && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-4 rounded-lg">
-            <UserProfile />
             {/* user={selectedUser} */}
             <button
               className="mt-4 bg-red-500 text-white w-full py-2 rounded"
