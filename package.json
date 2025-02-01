@@ -21,7 +21,6 @@
     "@simplewebauthn/server": "^13.1.1",
     "@simplewebauthn/types": "^12.0.0",
     "@simplewebauthn/typescript-types": "^8.3.4",
-    "@tailwindcss/postcss": "^4.0.2",
     "@types/yup": "^0.29.14",
     "axios": "^1.7.9",
     "base64url": "^3.0.1",
@@ -44,6 +43,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.0.2",
     "@types/bcrypt": "^5.0.2",
     "@types/luxon": "^3.4.2",
     "@types/mongoose": "^5.11.96",
@@ -56,7 +56,6 @@
     "eslint": "^9",
     "eslint-config-next": "^15.1.6",
     "next-transpile-modules": "^10.0.1",
-    "postcss": "^8.5.1",
     "tailwindcss": "^4.0.2",
     "typescript": "^5.7.2"
   }
