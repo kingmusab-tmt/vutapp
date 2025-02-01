@@ -3,7 +3,7 @@ import dbConnect from "@/lib/connectdb";
 import User from "@/models/user";
 import { getServerSession } from "next-auth";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await dbConnect();
 

@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { getServerSession } from "next-auth";
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
     await dbConnect();
     const session = await getServerSession();

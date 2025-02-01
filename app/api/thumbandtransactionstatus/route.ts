@@ -4,7 +4,7 @@ import dbConnect from "@/lib/connectdb";
 import { getServerSession } from "next-auth";
 
 // Fetch all data plans or a specific one by `planSize`
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = await getServerSession();
   const email = session?.user?.email;
 
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(status, { status: 200 });
     }
   } catch (error) {
+    console.log(error);
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to update authentication status" },
       { status: 500 }

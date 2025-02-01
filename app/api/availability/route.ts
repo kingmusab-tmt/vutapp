@@ -1,16 +1,22 @@
 import dbConnect from "@/lib/connectdb";
-import {DataPlan, AirtimePlan, CableSubscription, BillPayment} from "@/models/dataAirtimeUtil";
+import {
+  DataPlan,
+  AirtimePlan,
+  CableSubscription,
+  BillPayment,
+} from "@/models/dataAirtimeUtil";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest) {
   await dbConnect(); // Ensure the database is connected
 
   try {
-    const { network, planType, airtimeType, cableType, billType, available } = await req.json();
+    const { network, planType, airtimeType, cableType, billType, available } =
+      await req.json();
 
     let model;
     let filter = {};
-    let update = { $set: { available } };
+    const update = { $set: { available } };
 
     if (network && planType) {
       model = DataPlan;
@@ -25,19 +31,31 @@ export async function PATCH(req: NextRequest) {
       model = BillPayment;
       filter = { billType };
     } else {
-      return NextResponse.json({ error: "Invalid parameters." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid parameters." },
+        { status: 400 }
+      );
     }
 
     if (!model) {
-      return NextResponse.json({ error: "Invalid model selection." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid model selection." },
+        { status: 400 }
+      );
     }
 
     const result = await model.updateMany(filter, update);
 
     if (result.modifiedCount > 0) {
-      return NextResponse.json({ message: "Availability updated successfully." }, { status: 200 });
+      return NextResponse.json(
+        { message: "Availability updated successfully." },
+        { status: 200 }
+      );
     } else {
-      return NextResponse.json({ error: "No matching record found." }, { status: 404 });
+      return NextResponse.json(
+        { error: "No matching record found." },
+        { status: 404 }
+      );
     }
   } catch (error) {
     console.error(error);

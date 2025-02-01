@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import {
-  Box,
   TextField,
   Button,
   Typography,
@@ -47,7 +46,6 @@ const KycForm: React.FC<KycFormProps> = ({ handleCloseModal }) => {
   const {
     control,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
   } = useForm({

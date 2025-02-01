@@ -84,6 +84,7 @@ export const SignInPage: React.FC = () => {
     try {
       await signInWithWebauthn();
     } catch (error) {
+      console.log(error);
       try {
         startTransition(async () => {
           await handleEmailSignIn(formData.email);

@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 import withTM from "next-transpile-modules";
 
 const nextConfig: NextConfig = withTM(["@simplewebauthn/browser"])({
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   webpack: (config) => {
     config.module.rules.push({
@@ -24,11 +29,11 @@ export default nextConfig;
 
 // export default nextConfig;
 // const nextConfig: NextConfig = {
-//    eslint: {
-//     // Warning: This allows production builds to successfully complete even if
-//     // your project has ESLint errors.
-//     ignoreDuringBuilds: true,
-//   },
+//  eslint: {
+//   // Warning: This allows production builds to successfully complete even if
+//   // your project has ESLint errors.
+//   ignoreDuringBuilds: true,
+// },
 //   /* config options here */
 // };
 

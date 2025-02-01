@@ -20,12 +20,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  Dashboard,
-  Groups,
   PhoneInTalk,
   Payments,
   ReceiptLong,
-  RequestQuote,
   Settings,
   Menu as MenuIcon,
 } from "@mui/icons-material";
@@ -145,7 +142,11 @@ const AdminDashboard: React.FC = () => {
             { text: "Transaction", icon: <ReceiptLong /> },
             { text: "Settings", icon: <Settings /> },
           ].map((item, index) => (
-            <Tooltip key={index} title={menuOpen ? "" : item.text} placement="right">
+            <Tooltip
+              key={index}
+              title={menuOpen ? "" : item.text}
+              placement="right"
+            >
               <ListItem
                 component="button"
                 sx={{ mb: 1 }}

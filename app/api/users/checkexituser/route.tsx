@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   const username = req.nextUrl.searchParams.get("username");
   const email = req.nextUrl.searchParams.get("email");
   const bvnOrNin = req.nextUrl.searchParams.get("bvnOrNin");

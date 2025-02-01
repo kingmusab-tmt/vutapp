@@ -1,23 +1,29 @@
 // pages/api/reserve-account.ts
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getMonnifyToken } from '@/utils/monnify';
-import axios from 'axios';
+import { NextApiRequest, NextApiResponse } from "next";
+import { getMonnifyToken } from "@/utils/monnify";
+import axios from "axios";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     try {
-      const { accountReference, accountName, customerEmail, customerName, bvn } = req.body;
+      const {
+        accountReference,
+        accountName,
+        customerEmail,
+        customerName,
+        bvn,
+      } = req.body;
       const accessToken = await getMonnifyToken();
 
       const response = await axios.post(
-        'https://api.monnify.com/api/v2/bank-transfer/reserved-accounts',
+        "https://api.monnify.com/api/v2/bank-transfer/reserved-accounts",
         {
           accountReference,
           accountName,
-          currencyCode: 'NGN',
+          currencyCode: "NGN",
           contractCode: process.env.MONNIFY_CONTRACT_CODE,
           customerEmail,
           bvn,
@@ -27,17 +33,17 @@ export default async function handler(
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
 
       res.status(200).json(response.data);
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
+    } catch (error) {
+      console.log(error);
     }
   } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end('Method Not Allowed');
+    res.setHeader("Allow", ["POST"]);
+    res.status(405).end("Method Not Allowed");
   }
 }

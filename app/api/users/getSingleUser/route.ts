@@ -5,7 +5,7 @@ import User from "@/models/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   const _id = req.nextUrl.searchParams.get("id");
   const email = req.nextUrl.searchParams.get("email");
   await dbConnect();

@@ -11,7 +11,8 @@ import {
   TableHead,
   TableRow,
   Modal,
-  Snackbar, Alert
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 import DataPage from "./datapage";
@@ -21,29 +22,25 @@ interface IApiDetail {
   apiIds: string[];
 }
 
-interface ISimHostingDetail {
-  simHostingName: string;
-  simHostingIds: string[];
-}
 const Data = () => {
   interface IDataPlan {
     _id: string;
-  network: string;
-  planSize: number;
-  planType: string;
-  planAmount: number;
-  affiliatePrice: number;
-  topUserPrice: number;
-  planVolume: string;
-  smsCommand: string;
-  smartEarnerPrice: number;
-  apiPrice: number;
-  apiDetails: IApiDetail[];
-  planDuration: string;
-  available: boolean;
-  vendingMethod: string;
-}
-  
+    network: string;
+    planSize: number;
+    planType: string;
+    planAmount: number;
+    affiliatePrice: number;
+    topUserPrice: number;
+    planVolume: string;
+    smsCommand: string;
+    smartEarnerPrice: number;
+    apiPrice: number;
+    apiDetails: IApiDetail[];
+    planDuration: string;
+    available: boolean;
+    vendingMethod: string;
+  }
+
   const [savedPlans, setSavedPlans] = useState<IDataPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,29 +50,28 @@ const Data = () => {
   const [apiDetails, setApiDetails] = useState<IApiDetail[]>([]);
 
   const [snackbar, setSnackbar] = useState({
-      open: false,
-      message: "",
-      severity: "success" as "success" | "error" | "warning" | "info",
-    });
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "warning" | "info",
+  });
 
-
-  
-    const fetchPlans = async () => {
-      try {
-        const response = await axios.get("/api/data");
-        setSavedPlans(response.data);
-      } catch (err) {
-        setError("Failed to fetch plans");
-        setSnackbar({
-          open: true,
-          message: "Failed to fetch plans",
-          severity: "error",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-useEffect(() => {
+  const fetchPlans = async () => {
+    try {
+      const response = await axios.get("/api/data");
+      setSavedPlans(response.data);
+    } catch (err) {
+      console.log(err);
+      setError("Failed to fetch plans");
+      setSnackbar({
+        open: true,
+        message: "Failed to fetch plans",
+        severity: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchPlans();
   }, []);
 
@@ -84,43 +80,46 @@ useEffect(() => {
     fetchPlans();
   };
 
-
   const handleEdit = async (_id: string) => {
     try {
       const response = await axios.get(`/api/data?id=${_id}`);
       setSelectedPlan(response.data);
-      
-      const apiDetailsResponse = await axios.get(`/api/data?network=${response.data?.network}&planType=${response.data?.planType}`);
-        setApiDetails(apiDetailsResponse.data);
+
+      const apiDetailsResponse = await axios.get(
+        `/api/data?network=${response.data?.network}&planType=${response.data?.planType}`
+      );
+      setApiDetails(apiDetailsResponse.data);
       setIsAddPlan(false);
       setIsModalOpen(true);
     } catch (error) {
-      console.error('Error fetching plan:', error);
+      console.error("Error fetching plan:", error);
       setSnackbar({
-          open: true,
-          message: "Failed to Fetch Plan",
-          severity: "error",
-        });
+        open: true,
+        message: "Failed to Fetch Plan",
+        severity: "error",
+      });
     }
   };
 
   const handleDeletePlan = async (_id: string) => {
     try {
       await axios.delete(`/api/data?id=${_id}`);
-      setSavedPlans((prev) => prev.filter((IDataPlan) => IDataPlan._id !== _id));
+      setSavedPlans((prev) =>
+        prev.filter((IDataPlan) => IDataPlan._id !== _id)
+      );
       setSnackbar({
-          open: true,
-          message: "Deleted Successfully",
-          severity: "success",
+        open: true,
+        message: "Deleted Successfully",
+        severity: "success",
       });
       fetchPlans();
     } catch (err) {
       console.error("Error deleting plan:", err);
       setSnackbar({
-          open: true,
-          message: "Failed to delete plan",
-          severity: "error",
-        });
+        open: true,
+        message: "Failed to delete plan",
+        severity: "error",
+      });
     }
   };
 
@@ -137,24 +136,31 @@ useEffect(() => {
     fetchPlans();
   };
 
-   const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-      if (reason === "clickaway") return;
-     setSnackbar({ ...snackbar, open: false });
+  const handleSnackbarClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ ...snackbar, open: false });
   };
-  
+
   return (
     // <div className="p-2 shadow rounded-md container w-screen h-screen flex flex-col">
-<div>
+    <div>
       <Snackbar
-              open={snackbar.open}
-              autoHideDuration={4000}
-              onClose={handleSnackbarClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-              <Alert onClose={handleSnackbarClose} severity={snackbar.severity} variant="filled">
-                {snackbar.message}
-              </Alert>
-            </Snackbar>
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbar.severity}
+          variant="filled"
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Typography variant="h4" gutterBottom>
         Data Plans
       </Typography>
@@ -166,11 +172,10 @@ useEffect(() => {
       ) : (
         <>
           <Button
-                variant="contained"
-                
+            variant="contained"
             color="primary"
             onClick={handleAddPlan}
-            sx={{ marginBottom: 2}}
+            sx={{ marginBottom: 2 }}
           >
             Add New Plan
           </Button>
@@ -179,7 +184,7 @@ useEffect(() => {
             <Typography variant="h6" gutterBottom>
               Saved Plans
             </Typography>
-            <TableContainer sx={{ maxHeight: "100vh", overflow: 'auto', }}>
+            <TableContainer sx={{ maxHeight: "100vh", overflow: "auto" }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -194,33 +199,34 @@ useEffect(() => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {savedPlans && savedPlans.map((plan, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{plan.network}</TableCell>
-                      <TableCell>{plan.planSize}</TableCell>
-                      <TableCell>{plan.planType}</TableCell>
-                      <TableCell>{plan.vendingMethod}</TableCell>
-                      <TableCell>{plan.smartEarnerPrice}</TableCell>
-                      <TableCell>{plan.affiliatePrice}</TableCell>
-                      <TableCell>{plan.topUserPrice}</TableCell>
-                      <TableCell>
-                        {plan.planSize === 1 && (
+                  {savedPlans &&
+                    savedPlans.map((plan, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{plan.network}</TableCell>
+                        <TableCell>{plan.planSize}</TableCell>
+                        <TableCell>{plan.planType}</TableCell>
+                        <TableCell>{plan.vendingMethod}</TableCell>
+                        <TableCell>{plan.smartEarnerPrice}</TableCell>
+                        <TableCell>{plan.affiliatePrice}</TableCell>
+                        <TableCell>{plan.topUserPrice}</TableCell>
+                        <TableCell>
+                          {plan.planSize === 1 && (
+                            <Button
+                              color="primary"
+                              onClick={() => handleEdit(plan._id)}
+                            >
+                              Edit
+                            </Button>
+                          )}
                           <Button
-                            color="primary"
-                            onClick={() => handleEdit(plan._id)}
+                            color="error"
+                            onClick={() => handleDeletePlan(plan._id)}
                           >
-                            Edit
+                            Delete
                           </Button>
-                        )}
-                        <Button
-                          color="error"
-                          onClick={() => handleDeletePlan(plan._id)}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -247,7 +253,13 @@ useEffect(() => {
             borderRadius: 1,
           }}
         >
-          <DataPage selectedPlan={selectedPlan ?? undefined} isAddPlan={isAddPlan} handleCloseModal={handleCloseModal} fetchPlans={fetchPlans} apiDetails={apiDetails} />
+          <DataPage
+            selectedPlan={selectedPlan ?? undefined}
+            isAddPlan={isAddPlan}
+            handleCloseModal={handleCloseModal}
+            fetchPlans={fetchPlans}
+            apiDetails={apiDetails}
+          />
         </Box>
       </Modal>
     </div>

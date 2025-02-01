@@ -20,7 +20,7 @@ export async function PUT(req: NextRequest) {
     filter = { email };
   }
 
-  const user = await User.findOne(filter);
+  // const user = await User.findOne(filter);
   await User.updateOne(filter, UserInfo);
 
   return Response.json(true);

@@ -14,7 +14,8 @@ import {
   TableRow,
   TextField,
   Typography,
-  Snackbar, Alert
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import axios from "axios";
 
@@ -63,10 +64,10 @@ const DataPage: React.FC<DataPageProps> = ({
   const [vendingMethod, setVendingMethod] = useState("API");
   const [selectedPlanType, setSelectedPlanType] = useState(planTypes[0]);
   const [snackbar, setSnackbar] = useState({
-      open: false,
-      message: "",
-      severity: "success" as "success" | "error" | "warning" | "info",
-    });
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error" | "warning" | "info",
+  });
 
   const [formData, setFormData] = useState<IDataPlan>({
     network: networks[0],
@@ -111,7 +112,10 @@ const DataPage: React.FC<DataPageProps> = ({
     }
   }, [isAddPlan, selectedPlan, apiDetails]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (
+    field: string,
+    value: string | number | { apiName: string; apiIds: any[] }[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -144,18 +148,22 @@ const DataPage: React.FC<DataPageProps> = ({
       smsCommand: "",
       smartEarnerPrice: smartEarnerPrice * (size / 1000),
       apiPrice: apiPrice * (size / 1000),
-      apiDetails: formData.apiDetails.map((detail) => ({
-        apiName: detail.apiName,
-        apiId: detail.apiIds[sizeIndex],
-        apiIds: detail.apiIds,
-      })).filter((detail) => detail.apiId),
+      apiDetails: formData.apiDetails
+        .map((detail) => ({
+          apiName: detail.apiName,
+          apiId: detail.apiIds[sizeIndex],
+          apiIds: detail.apiIds,
+        }))
+        .filter((detail) => detail.apiId),
       planDuration: "30 days",
       available: true,
     }));
 
     try {
       if (isAddPlan) {
-        const response = await axios.post("/api/data", { plans: calculatedPlans });
+        const response = await axios.post("/api/data", {
+          plans: calculatedPlans,
+        });
         handleCloseModal();
         fetchPlans();
         if (response.status === 201) {
@@ -165,11 +173,13 @@ const DataPage: React.FC<DataPageProps> = ({
             severity: "success",
           });
         }
-        
-        
       } else {
-        await axios.delete(`/api/data?network=${formData.network}&planType=${formData.planType}`);
-        const response = await axios.post("/api/data", { plans: calculatedPlans });
+        await axios.delete(
+          `/api/data?network=${formData.network}&planType=${formData.planType}`
+        );
+        const response = await axios.post("/api/data", {
+          plans: calculatedPlans,
+        });
         if (response.status === 200) {
           setSnackbar({
             open: true,
@@ -179,7 +189,7 @@ const DataPage: React.FC<DataPageProps> = ({
         }
       }
       handleCloseModal();
-          fetchPlans();
+      fetchPlans();
     } catch (error) {
       console.error("Error saving plan:", error);
       setSnackbar({
@@ -189,7 +199,7 @@ const DataPage: React.FC<DataPageProps> = ({
       });
     }
   };
- 
+
   return (
     <Box sx={{ padding: 2 }}>
       <Snackbar
@@ -197,7 +207,10 @@ const DataPage: React.FC<DataPageProps> = ({
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -222,9 +235,7 @@ const DataPage: React.FC<DataPageProps> = ({
           <InputLabel>Network</InputLabel>
           <Select
             value={formData.network}
-            onChange={(e) =>
-              handleInputChange("network", e.target.value)
-            }
+            onChange={(e) => handleInputChange("network", e.target.value)}
           >
             {networks.map((network) => (
               <MenuItem key={network} value={network}>
@@ -352,13 +363,9 @@ const DataPage: React.FC<DataPageProps> = ({
         <Button variant="contained" color="primary" onClick={handleSave}>
           {isAddPlan ? "Save New Plan" : "Update Plan"}
         </Button>
-        
       </Box>
-      
-      </Box>
-    
+    </Box>
   );
-  
 };
 
 export default DataPage;

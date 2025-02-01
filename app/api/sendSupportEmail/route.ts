@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-
-export const dynamic = 'force-dynamic';
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const dynamic = "force-dynamic";
+export const POST = async (req: NextRequest) => {
   if (req.method !== "POST") {
-    return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
+    return NextResponse.json(
+      { message: "Method not allowed" },
+      { status: 405 }
+    );
   }
 
   const body = await req.json();
