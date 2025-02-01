@@ -60,7 +60,7 @@ const DataPage: React.FC<DataPageProps> = ({
   handleCloseModal,
   fetchPlans,
 }) => {
-  const [currentNetwork, setCurrentNetwork] = useState(0);
+  const [currentNetwork, setCurrentNetwork] = useState(networks[0]);
   const [vendingMethod, setVendingMethod] = useState("API");
   const [selectedPlanType, setSelectedPlanType] = useState(planTypes[0]);
   const [snackbar, setSnackbar] = useState({
@@ -70,7 +70,7 @@ const DataPage: React.FC<DataPageProps> = ({
   });
 
   const [formData, setFormData] = useState<IDataPlan>({
-    network: networks[0],
+    network: "",
     planSize: 0,
     planType: "",
     planAmount: 0,
@@ -90,9 +90,9 @@ const DataPage: React.FC<DataPageProps> = ({
     if (!isAddPlan && selectedPlan) {
       // Populate fields when editing a plan
       setFormData({
-        network: selectedPlan.network || networks[0],
+        network: selectedPlan.network || "",
         planSize: selectedPlan.planSize || 0,
-        planType: selectedPlan.planType || planTypes[0],
+        planType: selectedPlan.planType || "",
         planAmount: selectedPlan.planAmount || 0,
         affiliatePrice: selectedPlan.affiliatePrice || 0,
         topUserPrice: selectedPlan.topUserPrice || 0,
@@ -106,9 +106,9 @@ const DataPage: React.FC<DataPageProps> = ({
         vendingMethod: selectedPlan.vendingMethod || "API",
       });
 
-      setCurrentNetwork(networks.indexOf(selectedPlan.network || networks[0]));
+      setCurrentNetwork(selectedPlan.network || "");
       setVendingMethod(selectedPlan.vendingMethod || "API");
-      setSelectedPlanType(selectedPlan.planType || planTypes[0]);
+      setSelectedPlanType(selectedPlan.planType || "");
     }
   }, [isAddPlan, selectedPlan, apiDetails]);
 
@@ -137,7 +137,7 @@ const DataPage: React.FC<DataPageProps> = ({
       formData;
 
     const calculatedPlans: IDataPlan[] = planSizes.map((size, sizeIndex) => ({
-      network: networks[currentNetwork],
+      network: currentNetwork,
       planSize: size / 1000,
       planType: selectedPlanType,
       vendingMethod,
@@ -234,8 +234,8 @@ const DataPage: React.FC<DataPageProps> = ({
         <FormControl sx={{ flex: "1 1 200px" }}>
           <InputLabel>Network</InputLabel>
           <Select
-            value={formData.network}
-            onChange={(e) => handleInputChange("network", e.target.value)}
+            value={currentNetwork}
+            onChange={(e) => setCurrentNetwork(e.target.value)}
           >
             {networks.map((network) => (
               <MenuItem key={network} value={network}>

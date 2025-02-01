@@ -48,11 +48,11 @@ export interface IUser extends Document {
   dateJoined: Date;
   webAuthCredentials: WebAuthCredential[];
   webAuthChallenge?: string; // Added for challenge storage
-  hasSeenModal: boolean
-  hasTransactionPin: boolean
+  hasSeenModal: boolean;
+  hasTransactionPin: boolean;
   transactionPinResetCode: number;
   transactionPinResetExpires: Date;
-  failedResetAttempts: number
+  failedResetAttempts: number;
 }
 
 const reserverAccountDetailsSchema = new Schema<IReserverAccountDetails>({
@@ -71,7 +71,7 @@ const reserverAccountDetailsSchema = new Schema<IReserverAccountDetails>({
 
 const webAuthCredentialSchema = new Schema<WebAuthCredential>({
   credentialID: { type: String, required: true },
-  userID: { type: String},
+  userID: { type: String },
   transports: { type: [String], required: true },
   credentialPublicKey: { type: Buffer, required: true },
   counter: { type: Number, required: true },
@@ -80,15 +80,16 @@ const webAuthCredentialSchema = new Schema<WebAuthCredential>({
 const userSchema = new Schema<IUser>(
   {
     username: { type: String, unique: true },
-    firstName: { type: String},
-    middleName: { type: String},
+    firstName: { type: String },
+    middleName: { type: String },
     lastName: { type: String },
-    fullName: { type: String},
+    fullName: { type: String },
     email: { type: String, unique: true },
     role: { type: String, enum: ["admin", "user"] },
     userType: {
       type: String,
       enum: ["Smart Earner", "TopUser", "API User", "Affiliate User"],
+      default: "Smart Earner",
     },
     mobileNumber: { type: String },
     accountBalance: { type: Number, default: 0 },
@@ -99,13 +100,15 @@ const userSchema = new Schema<IUser>(
     dateOfBirth: { type: Date },
     transactionPin: { type: String },
     refererUsername: { type: String, default: null },
-    referals: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
+    referals: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
+    ],
     refererBonus: { type: Number, default: 0 },
     thumbprintStatus: { type: Boolean, default: false },
-    transactionStatus: {type: Boolean, default: false},
+    transactionStatus: { type: Boolean, default: false },
     lastLogin: { type: Date, default: null },
     dateJoined: { type: Date, default: Date.now },
-    webhookUrl: {type: String},
+    webhookUrl: { type: String },
     webAuthCredentials: { type: [webAuthCredentialSchema], default: [] },
     webAuthChallenge: { type: String, default: null }, // Added challenge storage
     hasSeenModal: { type: Boolean, default: false },
