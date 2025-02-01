@@ -224,23 +224,25 @@ export default function DashboardHome() {
         <Box
           sx={{
             position: "absolute",
-            top: "50%",
+            top: "55%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 500,
+            width: 350,
             bgcolor: "white",
-            p: 2,
             borderRadius: 2,
             boxShadow: 24,
             textAlign: "center",
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            Complete Your KYC
-          </Typography>
+          Welcome {username}
+          <Typography variant="h6">Please Complete your KYC</Typography>
           <KycForm handleCloseModal={handleCloseModal} />{" "}
           {/* Render the KYC Form */}
-          <Button variant="contained" sx={{ mt: 2 }} onClick={handleCloseModal}>
+          <Button
+            variant="contained"
+            sx={{ mt: 1, mb: 1 }}
+            onClick={handleCloseModal}
+          >
             Dismiss
           </Button>
         </Box>

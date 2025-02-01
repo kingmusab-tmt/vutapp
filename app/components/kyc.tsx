@@ -98,15 +98,11 @@ const KycForm: React.FC<KycFormProps> = ({ handleCloseModal }) => {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 5 }}>
-        <Typography variant="h5" gutterBottom>
-          Welcome, {session?.user?.name || "User"}! Please Complete your KYC
-          <Typography variant="h6">
-            The below information is reguired because of Central Bank of Nigeria
-            (CBN) directives by requiring users to provide their Bank
-            Verification Number (BVN) or National Identification Number (NIN)
-            before creating new virtual accounts.{" "}
-          </Typography>
+      <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          This is based on the Central Bank of Nigeria (CBN) directives that all
+          Customer must provide their BVN & NIN before creating new virtual
+          accounts that you will use to fund your Wallet.{" "}
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
