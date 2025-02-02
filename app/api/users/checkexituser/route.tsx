@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   const username = req.nextUrl.searchParams.get("username");
   const email = req.nextUrl.searchParams.get("email");
   const bvnOrNin = req.nextUrl.searchParams.get("bvnOrNin");
-  const phoneNumber = req.nextUrl.searchParams.get("phoneNumber");
+  const mobileNumber = req.nextUrl.searchParams.get("mobileNumber");
   await dbConnect();
 
   let filterUser = {};
@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
     filterUser = { email };
   } else if (bvnOrNin) {
     filterUser = { bvnOrNin };
-  } else if (phoneNumber) {
-    filterUser = { phoneNumber };
+  } else if (mobileNumber) {
+    filterUser = { mobileNumber };
   }
 
   try {

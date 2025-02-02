@@ -15,7 +15,7 @@ const userSchema = yup.object().shape({
     .email("Invalid email format")
     .required("Email is required")
     .trim(),
-  phoneNumber: yup
+  mobileNumber: yup
     .number()
     .typeError("Phone number must be a valid number")
     .required("Phone number is required")
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       name,
       username,
       email,
-      phoneNumber,
+      mobileNumber,
       password,
       bvnOrNin,
       country,
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
       name,
       username,
       email,
-      phoneNumber,
+      mobileNumber,
       password: hashedPassword,
       bvnOrNin,
       country,

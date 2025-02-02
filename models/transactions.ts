@@ -1,18 +1,20 @@
 import mongoose, { Schema, Document, model } from "mongoose";
 
 export interface ITransaction extends Document {
-  type: string; // "CableSubscription", "BillPayment", "ManualFunding", "AutomaticFunding", "DataTransaction"
+  type: string; // "CableSubscription", "BillPayment", "ManualFunding", "AutomaticFunding", "DataTransaction", "AirtimeTransaction"
   amount?: number; // General transaction amount
   balanceBefore: number; // Balance before transaction
   balanceAfter: number; // Balance after transaction
   status: string; // "Pending", "Successful", "Failed"
   userId?: string;
-  transactionType: string;
+  bypass: boolean;
   referenceId: string;
 
+  // Airtime Transaction Fields
+  airtimeType: string;
+  buyingPrice: number;
   // Cable Subscription Fields
   iucOrSmartcardNumber?: number;
-  planAmount?: number;
   cableId?: number;
   cablePlanId?: number;
   refund?: boolean;
@@ -28,12 +30,11 @@ export interface ITransaction extends Document {
   discoNameId?: number;
 
   // Data Transaction Fields
-  dataType?: string;
+  planType?: string;
+  plansize: string;
   mobileNumber?: number;
   medium?: string; // e.g., "API", "Web"
-  portedNumber?: boolean;
-  networkId?: number;
-  planId?: number;
+  network?: string;
 
   // Funding Transaction Fields
   fundingType?: "Manual" | "Automatic"; // Specific to funding transactions
@@ -51,27 +52,31 @@ const transactionSchema = new Schema<ITransaction>(
         "ManualFunding",
         "AutomaticFunding",
         "DataTransaction",
+        "AirtimeTransaction",
       ],
     },
     amount: { type: Number },
-    balanceBefore: { type: Number, required: true },
-    balanceAfter: { type: Number, required: true },
+    balanceBefore: { type: Number },
+    balanceAfter: { type: Number },
     status: {
       type: String,
       required: true,
       enum: ["Pending", "Successful", "Failed"],
     },
-    transactionType: { type: String, required: true },
-    referenceId: { type: String, required: true, unique: true },
+    referenceId: { type: String, unique: true },
+
+    // Airtime Subscription Field
+    airtimeType: { type: String },
+    buyingPrice: { type: Number },
 
     // Cable Subscription Fields
-    iucOrSmartcardNumber: { type: Number, required: true },
-    planAmount: { type: Number },
+    iucOrSmartcardNumber: { type: Number },
     reference: { type: String },
     cableId: { type: Number },
     cablePlanId: { type: Number },
     userId: { type: String },
     refund: { type: Boolean, default: false },
+    bypass: { type: Boolean, default: false },
 
     // Bill Payment Fields
     meterNumber: { type: Number },
@@ -83,12 +88,11 @@ const transactionSchema = new Schema<ITransaction>(
     discoNameId: { type: Number },
 
     // Data Transaction Fields
-    dataType: { type: String },
+    planType: { type: String },
     mobileNumber: { type: Number },
     medium: { type: String },
-    portedNumber: { type: Boolean },
-    networkId: { type: Number },
-    planId: { type: Number },
+    network: { type: String },
+    plansize: { type: String },
 
     // Funding Transaction Fields
     fundingType: { type: String, enum: ["Manual", "Automatic"] },

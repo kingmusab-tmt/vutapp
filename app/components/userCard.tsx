@@ -9,7 +9,7 @@ interface UserCardProps {
     role: string;
     address: string;
     email: string;
-    phoneNumber: string;
+    mobileNumber: string;
     image: string;
   };
   onViewProfile: (userId: string) => void;
@@ -93,7 +93,7 @@ const UserCard: FC<UserCardProps> = ({
       </div>
       <div className="flex justify-between mt-2">
         <p className="text-sm text-gray-600">
-          <strong>Phone:</strong> {user.phoneNumber}
+          <strong>Phone:</strong> {user.mobileNumber}
         </p>
       </div>
       <button

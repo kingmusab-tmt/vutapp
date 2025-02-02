@@ -3,7 +3,7 @@ export interface User {
   username: string;
   name: string;
   email: string;
-  phoneNumber: string;
+  mobileNumber: string;
   bvnOrNin: string;
   role: string;
   country: string;
@@ -12,7 +12,7 @@ export interface User {
   address: string;
   nextOfKin: {
     name: string;
-    phoneNumber: string;
+    mobileNumber: string;
     address: string;
     image: string;
     email: string;

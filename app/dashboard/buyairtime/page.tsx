@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Container,
@@ -17,6 +17,8 @@ import mtnLogo from "../../../public/images/mtn.png";
 import airtelLogo from "../../../public/images/aritel.png";
 import mobile9Logo from "../../../public/images/9mobile.png";
 import gloLogo from "../../../public/images/glo.jpg";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 const airtimeTypes = ["VTU", "Share and Sell"];
 
@@ -30,8 +32,35 @@ const BuyAirtime: React.FC = () => {
   const [selectedAirtimeType, setSelectedAirtimeType] =
     useState<AirtimeType | null>(null);
   const [amount, setAmount] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [mobileNumber, setMobileNumber] = useState<string>("");
   const [bypass, setBypass] = useState<boolean>(false);
+  const [userType, setUserType] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [airtimePlan, setAirtimePlan] = useState<{
+    network: string;
+    airtimeType: string;
+    smartEarnerPercent: number;
+    affiliatePercent: number;
+    topUserPercent: number;
+  } | null>(null);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    const fetchUserType = async () => {
+      try {
+        if (!session?.user?.email) return;
+        const response = await axios.get(
+          `/api/users/getSingleUser?email=${session.user.email}`
+        );
+        setUserType(response.data.userType);
+        setUserId(response.data._id);
+      } catch (error) {
+        console.error("Error fetching user type:", error);
+      }
+    };
+
+    fetchUserType();
+  }, [session]);
 
   const handleNetworkSelect = (network: NetworkKeys) => {
     setSelectedNetwork(network);
@@ -43,15 +72,49 @@ const BuyAirtime: React.FC = () => {
     setSelectedAirtimeType(type);
   };
 
-  const handleSubmit = () => {
-    console.log({
-      network: selectedNetwork,
-      airtimeType: selectedAirtimeType,
-      amount,
-      phoneNumber,
-      bypass,
-    });
-    // Send the information to the backend
+  const handleSubmit = async () => {
+    if (!selectedNetwork || !selectedAirtimeType || !amount || !mobileNumber) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const airtimePlanResponse = await axios.get(
+        `/api/airtimeplan?network=${selectedNetwork}&airtimeType=${selectedAirtimeType}`
+      );
+      setAirtimePlan(airtimePlanResponse.data);
+
+      const payload = {
+        network: selectedNetwork,
+        airtimeType: selectedAirtimeType,
+        amount: parseFloat(amount), // Convert amount to a number
+        phone: mobileNumber,
+        bypass,
+        userId,
+        userType,
+        airtimePlan,
+      };
+
+      const purchaseResponse = await fetch("/api/buyairtime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await purchaseResponse.json();
+      console.log("API Response:", data);
+
+      if (purchaseResponse.ok) {
+        alert("Airtime purchase successful!");
+      } else {
+        alert(`Error: ${data.error || "Failed to process request"}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An error occurred while processing your request.");
+    }
   };
 
   return (
@@ -156,8 +219,8 @@ const BuyAirtime: React.FC = () => {
           <TextField
             fullWidth
             placeholder="Enter phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={mobileNumber}
+            onChange={(e) => setMobileNumber(e.target.value)}
             sx={{ mb: 2 }}
           />
           <FormControlLabel

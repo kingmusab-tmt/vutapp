@@ -37,6 +37,7 @@ interface IAirtimePlan extends Document {
   airtimeAmount: number;
   smartEarnerPercent: number;
   affiliatePercent: number;
+  buyingPrice: number;
   topUserPercent: number;
   apiPercent: number;
   shareAndSellPercent: number;
@@ -106,6 +107,7 @@ const AirtimePlanSchema = new Schema<IAirtimePlan>({
   network: { type: String, required: true },
   airtimeType: { type: String, required: true },
   airtimeAmount: { type: Number },
+  buyingPrice: { type: Number },
   smartEarnerPercent: { type: Number, required: true },
   affiliatePercent: { type: Number, required: true },
   topUserPercent: { type: Number, required: true },

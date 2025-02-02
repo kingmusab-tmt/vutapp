@@ -55,7 +55,7 @@ const Transactions: React.FC = () => {
 
     if (searchQuery) {
       filtered = filtered.filter((transaction) =>
-        transaction.phoneNumber?.includes(searchQuery)
+        transaction.mobileNumber?.includes(searchQuery)
       );
     }
 
@@ -71,7 +71,7 @@ const Transactions: React.FC = () => {
             <TableCell>{transaction.amount}</TableCell>
             <TableCell>{transaction.prevBalance}</TableCell>
             <TableCell>{transaction.currentBalance}</TableCell>
-            <TableCell>{transaction.phoneNumber}</TableCell>
+            <TableCell>{transaction.mobileNumber}</TableCell>
             <TableCell>{transaction.date}</TableCell>
             <TableCell>{transaction.status}</TableCell>
             <TableCell>
@@ -84,7 +84,7 @@ const Transactions: React.FC = () => {
           <TableRow key={transaction.id}>
             <TableCell>{transaction.plan}</TableCell>
             <TableCell>{transaction.planAmount}</TableCell>
-            <TableCell>{transaction.phoneNumber}</TableCell>
+            <TableCell>{transaction.mobileNumber}</TableCell>
             <TableCell>{transaction.prevBalance}</TableCell>
             <TableCell>{transaction.currentBalance}</TableCell>
             <TableCell>{transaction.date}</TableCell>

@@ -1,63 +1,100 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buyData } from "@/utils/api";
+import {
+  createTransaction,
+  updateTransactionStatus,
+} from "@/utils/transactions";
+import { extractPlanDetails, generateReferenceId } from "@/utils/junkfunctions";
+
+export function exportTransactionStatus(status: String) {
+  return { status };
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(`THis is the body: ${body}`);
-    const { network, planType, apiDetails, phoneNumber, bypass } = body.data;
-    console.log(`THis is the Network: ${network}`);
-    console.log(`THis is the planType: ${planType}`);
-    console.log(`THis is the apiName: ${apiDetails[0].apiName}`);
-    console.log(`THis is the apiId: ${apiDetails[0].apiId}`);
-    console.log(`THis is the phone: ${phoneNumber}`);
+    const {
+      network,
+      planType,
+      apiDetails,
+      mobileNumber,
+      bypass,
+      plan,
+      userId,
+    } = body.data;
 
     let network_id = "";
-    if (network === "MTN") {
-      network_id = "1";
-    } else if (network === "Airtel") {
-      network_id = "2";
-    } else if (network === "9mobile") {
-      network_id = "4";
-    } else {
-      network_id = "3";
+    switch (network) {
+      case "MTN":
+        network_id = "1";
+        break;
+      case "Airtel":
+        network_id = "2";
+        break;
+      case "9mobile":
+        network_id = "4";
+        break;
+      default:
+        network_id = "3";
     }
-    let provider = "";
+
+    let provider = "BELLO_SME";
     if (apiDetails[0].apiName === "Bello") {
       if (
         network === "MTN" &&
-        (planType === "SME" || planType === "SME2" || planType === "Data Share")
+        ["SME", "SME2", "Data Share"].includes(planType)
       ) {
         provider = "BELLO_SME";
       } else if (
         network === "MTN" &&
-        (planType === "Corporate Gifting" || planType === "Gifting")
+        ["Corporate Gifting", "Gifting"].includes(planType)
       ) {
         provider = "BELLO_CG";
       } else if (
-        network === "Airtel" &&
-        (planType === "Corporate Gifting" || planType === "Gifting")
-      ) {
-        provider = "BELLO_GENERAL";
-      } else if (
-        network === "9mobile" &&
-        (planType === "Corporate Gifting" || planType === "Gifting")
-      ) {
-        provider = "BELLO_GENERAL";
-      } else if (
-        network === "Glo" &&
-        (planType === "Corporate Gifting" || planType === "Gifting")
+        ["Airtel", "9mobile", "Glo"].includes(network) &&
+        ["Corporate Gifting", "Gifting", "SME"].includes(planType)
       ) {
         provider = "BELLO_GENERAL";
       }
-    } else {
-      provider = "BELLO_SME";
     }
+
     const plan_id = apiDetails[0].apiId;
-    const result = await buyData(provider, network_id, phoneNumber, plan_id);
+    const type = "DataTransaction";
+    const referenceId = await generateReferenceId();
+    const { plansize, amount } = await extractPlanDetails(plan);
+
+    const DataTransactions = {
+      userId,
+      type,
+      amount,
+      referenceId,
+      refund: false,
+      status: "Pending",
+      plansize,
+      planType,
+      bypass,
+      mobileNumber,
+      medium: "API",
+      network,
+    };
+
+    const transaction = await createTransaction(DataTransactions);
+    const result = await buyData(provider, network_id, mobileNumber, plan_id);
+
+    if (result.status === true) {
+      transaction.status = "Successful";
+    } else {
+      transaction.status = "Failed";
+    }
+    await updateTransactionStatus(
+      referenceId,
+      type,
+      transaction.status,
+      amount
+    );
+
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    console.error("Error verifying NIN:", error);
     return NextResponse.json(
       {
         error: "Internal Server Error",

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Container,
@@ -16,20 +16,26 @@ import Image from "next/image";
 import gotvLogo from "../../../public/images/GOTV.png";
 import dstvLogo from "../../../public/images/DStv.png";
 import startimeLogo from "../../../public/images/startimes.jpg";
+import showmaxLogo from "../../../public/images/Showmax.png";
+import { cablePlans, fetchCablePlans } from "@/utils/cableplans";
 
 const utilityTypes = ["Cable Payment", "Bill Payment"];
-const cableProviders = ["GOTV", "DSTV", "Startime"];
-const cablePlans = {
-  GOTV: ["Lite Plan", "Max Plan", "Supreme Plan"],
-  DSTV: ["Compact", "Compact Plus", "Premium"],
-  Startime: ["Basic", "Classic", "Super"],
-};
+const cableProviders = ["GOTV", "DSTV", "Startimes", "Showmax"];
+
 const billTypes = ["Electricity", "Water", "Internet"];
 const electricityProviders = [
-  "Abuja Electricity",
-  "Yola Electricity",
-  "Kaduna Electricity",
-  "Lagos Electricity",
+  "Ikeja-Electric",
+  "Eko-Electricity",
+  "Kano-Electricity",
+  "Port-Harcourt-Electric",
+  "Jos-Electricity",
+  "Ibadan-Electricity",
+  "Kaduna-Electric",
+  "Abuja-Electric",
+  "Enugu-Electric",
+  "Benin-Electric",
+  "ABA-Electric",
+  "YOLA-Electric",
 ];
 
 type UtilityType = "Cable Payment" | "Bill Payment";
@@ -103,6 +109,12 @@ const UtilityPayments: React.FC = () => {
       ? isCablePaymentComplete
       : isBillPaymentComplete;
 
+  useEffect(() => {
+    if (selectedCableProvider) {
+      fetchCablePlans(selectedCableProvider.toLocaleLowerCase());
+    }
+  }, [selectedCableProvider]);
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -170,7 +182,9 @@ const UtilityPayments: React.FC = () => {
                           ? gotvLogo
                           : provider === "DSTV"
                           ? dstvLogo
-                          : startimeLogo
+                          : provider === "Startimes"
+                          ? startimeLogo
+                          : showmaxLogo
                       }
                       alt={provider}
                       layout="fill"

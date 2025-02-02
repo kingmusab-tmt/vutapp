@@ -35,8 +35,9 @@ const BuyData: React.FC = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<string | null>(null);
   const [selectedPlanType, setSelectedPlanType] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [mobileNumber, setMobileNumber] = useState<string>("");
   const [bypass, setBypass] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserType = async () => {
@@ -45,8 +46,8 @@ const BuyData: React.FC = () => {
         const response = await axios.get(
           `/api/users/getSingleUser?email=${session.user.email}`
         );
-        console.log(response.data.userType);
         setUserType(response.data.userType);
+        setUserId(response.data._id);
       } catch (error) {
         console.error("Error fetching user type:", error);
       }
@@ -84,9 +85,7 @@ const BuyData: React.FC = () => {
           } else if (userType === "Top User") {
             planPrice = topUserPrice;
           }
-          console.log(planSize);
-          console.log(planVolume);
-          console.log(planPrice);
+
           const planLabel = `${planSize}${planVolume} N${planPrice}`;
 
           if (!newPlans[network]) {
@@ -97,7 +96,6 @@ const BuyData: React.FC = () => {
           }
           newPlans[network][planType].push({ label: planLabel, apiDetails });
         });
-        console.log(newPlans);
         setPlans(newPlans);
       } catch (error) {
         console.error("Error fetching data plans:", error);
@@ -129,10 +127,11 @@ const BuyData: React.FC = () => {
       apiDetails: Array.isArray(selectedPlan?.apiDetails)
         ? selectedPlan.apiDetails.map((detail) => ({ ...detail })) // Ensure it's an array of plain objects
         : selectedPlan?.apiDetails ?? {}, // Default to an empty object
-      phoneNumber,
+      mobileNumber,
       bypass,
+      plan: selectedPlan?.label,
+      userId,
     };
-    console.log("Data being sent:", JSON.stringify(datasub, null, 2));
     try {
       const response = await axios.post(
         "/api/buydata",
@@ -256,8 +255,8 @@ const BuyData: React.FC = () => {
           <TextField
             fullWidth
             placeholder="Enter phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            value={mobileNumber}
+            onChange={(e) => setMobileNumber(e.target.value)}
             sx={{ mb: 2 }}
           />
           <FormControlLabel

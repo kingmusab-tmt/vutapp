@@ -21,11 +21,7 @@ export const buyData = async (
   phone: string,
   plan_id: string
 ) => {
-  console.log(`this is the provider ${provider}`);
-  console.log(`this is the assigned Network Id ${network_id}`);
-  console.log(`plan_id ${plan_id}`);
   const apiProvider = API_PROVIDERS[provider];
-
   try {
     const response = await axios.post(
       apiProvider.baseUrl,
@@ -37,8 +33,7 @@ export const buyData = async (
         },
       }
     );
-    console.log(response);
-    console.log(response.data);
+
     return response.data;
   } catch (error: any) {
     console.error(
